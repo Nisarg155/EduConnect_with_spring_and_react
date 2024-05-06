@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
+import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
+import {useDispatch} from "react-redux";
+import {useSelector} from "react-redux";
+import app from "../../firebase/config.jsx";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [openModal, setOpenModal] = useState(true);
+  const user = useSelector( (state) => state.user )
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
