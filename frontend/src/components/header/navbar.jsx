@@ -4,6 +4,8 @@ import {useDispatch, useSelector} from "react-redux";
 import { getAuth, signInWithEmailAndPassword ,createUserWithEmailAndPassword ,updateProfile } from "firebase/auth";
 import app from "../../firebase/config.jsx";
 import {AddUser} from "../../redux/reducer/loginslice.jsx";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const auth = getAuth(app);
 
@@ -32,6 +34,13 @@ const Navbar = () => {
         setEmail('')
     }
 
+    const notification = (message) => {
+        console.log(message)
+        toast.success(message,{
+            autoClose: 3000
+        })
+    }
+
     const check_auth = async (obj) => {
         console.log(obj);
         const email = obj.email;
@@ -49,10 +58,12 @@ const Navbar = () => {
                   email:user.email,
                   password:password
                 }
+                  let message = `Welcome Back , ${user.displayName}`
                 console.log(usr)
                 dispatch(AddUser(usr))
                 setOpenModal(false);
                 setEmail('')
+                notification(message)
                 // ...
               })
               .catch((error) => {
@@ -68,25 +79,25 @@ const Navbar = () => {
                 }).then(() => {
                   // Profile updated!
                   const user = userCredential.user;
-                  console.log(user);
                   const usr = {
                     username:username,
                     email:user.email,
                     password:password
                   }
-                  console.log(usr)
+                    let message = `Welcome Back , ${user.displayName}`
                   dispatch(AddUser(usr));
                   setOpenModal(false)
                   setSignupModal(false)
                   setUsername('')
                   setEmail('')
+                    notification(message)
                 }).catch((error) => {
                   // An error occurred
-                  console.log(error)
+                  notification(error.code);
                 });
               })
               .catch((error) => {
-                console.log(error);
+                notification(error.code)
               });
 
         }
@@ -286,7 +297,11 @@ const Navbar = () => {
                     </div>
                 </div>
             </nav>
+            <ToastContainer position="top-center"
+                            theme="dark"
+            />
         </div>
+
     );
 };
 
