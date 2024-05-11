@@ -1,20 +1,10 @@
-package model;
-
+package org.backend.backend.model;
 
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
-@Document(collation = "Students")
-public class students {
-
-    @MongoId
-    String id;
-    String name;
-    String email;
-
-    public students() {
-    }
-
+@Document
+public class testing
+{
     public String getId() {
         return id;
     }
@@ -31,20 +21,17 @@ public class students {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    String id;
+    private String name;
 
     @Override
     public String toString() {
-        return "students{" +
+        return "testing{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
                 '}';
+    }
+
+    public testing() {
     }
 }
