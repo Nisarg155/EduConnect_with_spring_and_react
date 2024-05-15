@@ -1,13 +1,16 @@
 import {useState} from 'react';
 import {Button, Label, Modal, TextInput} from "flowbite-react";
 import {useDispatch, useSelector} from "react-redux";
-import { getAuth, signInWithEmailAndPassword ,createUserWithEmailAndPassword ,updateProfile } from "firebase/auth";
+import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, updateProfile} from 'firebase/auth';
+import {getFirestore , setDoc , doc , getDoc } from 'firebase/firestore'
 import app from "../../firebase/config.jsx";
 import {AddUser} from "../../redux/reducer/loginslice.jsx";
-import { ToastContainer, toast } from 'react-toastify';
+import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+
 const auth = getAuth(app);
+const firestore_database = getFirestore(app)
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -36,69 +39,90 @@ const Navbar = () => {
 
     const notification = (message) => {
         console.log(message)
-        toast.success(message,{
+        toast.success(message, {
             autoClose: 3000
         })
     }
 
-    const check_auth = async (obj) => {
-        console.log(obj);
+    const check_auth = async  (obj) => {
         const email = obj.email;
         const password = obj.password;
         const username = obj.username;
-        if(!signupModal)
-        {
-          await signInWithEmailAndPassword(auth, email, password)
-              .then((userCredential) => {
-                // Signed in
-                const user = userCredential.user;
-                console.log(user);
-                const usr = {
-                  username:user.displayName,
-                  email:user.email,
-                  password:password
-                }
-                  let message = `Welcome Back , ${user.displayName}`
-                console.log(usr)
-                dispatch(AddUser(usr))
-                setOpenModal(false);
-                setEmail('')
-                notification(message)
-                // ...
-              })
-              .catch((error) => {
-                console.log(error)
-              });
-        }
-        else{
-          await createUserWithEmailAndPassword(auth, email, password)
-              .then((userCredential) => {
-                // Signed up
-                updateProfile(auth.currentUser, {
-                  displayName: username,
-                }).then(() => {
-                  // Profile updated!
-                  const user = userCredential.user;
-                  const usr = {
-                    username:username,
-                    email:user.email,
-                    password:password
-                  }
+        let role = obj.role;
+        if(!role)
+
+
+        if (!signupModal) {
+            await signInWithEmailAndPassword(auth, email, password)
+                .then( async (userCredential) => {
+                    const dbref = doc(firestore_database,"User",userCredential.user.uid)
+                    let snapshot = await getDoc(dbref)
+                    if(!snapshot.exists()) throw Error("Error Retrieving  Role")
+
+                    // Signed in
+                    const user = userCredential.user;
+                    const usr = {
+                        username: user.displayName,
+                        email: user.email,
+                        password: password,
+                        role:snapshot.data().role
+                    }
                     let message = `Welcome Back , ${user.displayName}`
-                  dispatch(AddUser(usr));
-                  setOpenModal(false)
-                  setSignupModal(false)
-                  setUsername('')
-                  setEmail('')
+                    dispatch(AddUser(usr))
+                    setOpenModal(false);
+                    setEmail('')
                     notification(message)
-                }).catch((error) => {
-                  // An error occurred
-                  notification(error.code);
+                    // ...
+                })
+                .catch((error) => {
+                    toast.error (error.code)
+                    return false
                 });
-              })
-              .catch((error) => {
-                notification(error.code)
-              });
+        } else {
+            await createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Signed up
+                    updateProfile(auth.currentUser, {
+                        displayName: username,
+                    }).then(() => {
+                        // Profile updated!
+                        const user = userCredential.user;
+                        const usr = {
+                            username: username,
+                            email: user.email,
+                            password: password,
+                            role:role
+                        }
+                        let message = `Welcome Back , ${user.displayName}`
+                        dispatch(AddUser(usr));
+                        setOpenModal(false)
+                        setSignupModal(false)
+                        setUsername('')
+                        setEmail('')
+                        notification(message)
+                    }).then(
+                        (user) => {
+                            console.log(user.uid)
+                            const docref = doc(firestore_database,'User',user.uid);
+                            const obj = {
+                                email:user.email,
+                                role:role
+                            }
+                             setDoc(docref,obj)
+
+
+                        }
+                    )
+                        .catch((error) => {
+                        // An error occurred
+                        toast.error(error.code);
+                        return false
+                    });
+                })
+                .catch((error) => {
+                    toast.error(error.code)
+                    return false
+                });
 
         }
     }
@@ -116,7 +140,12 @@ const Navbar = () => {
                         (event) => {
                             event.preventDefault();
                             const data = new FormData(event.target);
+                            if(signupModal && (data.get('role') === 'none' )) {
+                                toast.error("Please Select Role")
+                                return
+                            }
                             const obj = {
+                                role:data.get('role') ?? '',
                                 username: data.get('username') ?? '',
                                 email: data.get('email') ?? '',
                                 password: data.get('password') ?? ''
@@ -124,7 +153,8 @@ const Navbar = () => {
 
                             check_auth(obj).then(
 
-                            )
+                            );
+
 
                         }
                     }>
@@ -179,6 +209,23 @@ const Navbar = () => {
                                            className="text-sm text-cyan-700 hover:underline dark:text-cyan-500">
                                             Lost Password?
                                         </a>
+                                }
+
+                            </div>
+                            <div className="flex justify-between">
+
+                                {
+                                    signupModal ?
+                                        <div>
+                                        <label htmlFor={"role"}/>
+                                        <select name={"role"} id={"role"}>
+                                            <option value={"none"}>Select Role</option>
+                                            <option value={"Teacher"}>Teacher</option>
+                                            <option value={"Student"}>Student</option>
+                                        </select>
+                                        </div>
+                                        :
+                                        null
                                 }
 
                             </div>
@@ -299,6 +346,7 @@ const Navbar = () => {
             </nav>
             <ToastContainer position="top-center"
                             theme="dark"
+                            draggablePercent={60}
             />
         </div>
 
