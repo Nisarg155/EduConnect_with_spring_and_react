@@ -5,22 +5,21 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-public class Student
-{
+public class Teacher {
     @Id
-    private String student_id;
+    private String teacher_id;
     @Property("name")
     private String name;
 
-    public Student() {
+    public Teacher() {
     }
 
-    public String getStudent_id() {
-        return student_id;
+    public String getTeacher_id() {
+        return teacher_id;
     }
 
-    public void setStudent_id(String student_id) {
-        this.student_id = student_id;
+    public void setTeacher_id(String teacher_id) {
+        this.teacher_id = teacher_id;
     }
 
     public String getName() {
@@ -33,8 +32,8 @@ public class Student
 
     @Override
     public String toString() {
-        return "Student{" +
-                "student_id='" + student_id + '\'' +
+        return "Teacher{" +
+                "teacher_id='" + teacher_id + '\'' +
                 ", name='" + name + '\'' +
                 '}';
     }

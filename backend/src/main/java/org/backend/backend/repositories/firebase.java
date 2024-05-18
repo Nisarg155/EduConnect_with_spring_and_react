@@ -12,10 +12,9 @@ import java.util.concurrent.ExecutionException;
 @Repository
 public class firebase
 {
-   public     String create(users user) throws ExecutionException, InterruptedException {
+   public   String create(users user) throws ExecutionException, InterruptedException {
         Firestore fsdb = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> apiFuture = fsdb.collection("users").document(user.getDoc_id()).set(user);
-
+        ApiFuture<WriteResult> apiFuture = fsdb.collection("users").document(user.getUid()).set(user);
         return apiFuture.get().getUpdateTime().toString();
     }
 }
