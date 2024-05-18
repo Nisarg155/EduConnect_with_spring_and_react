@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useRef, useState} from 'react';
 import {Button, Label, Modal, TextInput} from "flowbite-react";
 import {useDispatch, useSelector} from "react-redux";
 import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, updateProfile} from 'firebase/auth';
@@ -7,6 +7,7 @@ import app from "../../firebase/config.jsx";
 import {AddUser} from "../../redux/reducer/loginslice.jsx";
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {FetchComponents} from "../../fetch_components/fetchComponents.jsx";
 
 
 const auth = getAuth(app);
@@ -19,6 +20,8 @@ const Navbar = () => {
     const [username, setUsername] = useState('')
     const user = useSelector((state) => state.User)
     const dispatch = useDispatch();
+    const login = useRef(null);
+    const signup = useRef(null);
 
     const [email, setEmail] = useState('');
 
@@ -49,10 +52,10 @@ const Navbar = () => {
         const password = obj.password;
         const username = obj.username;
         let role = obj.role;
-        if(!role)
 
 
         if (!signupModal) {
+            login.current.style.opacity=0.5
             await signInWithEmailAndPassword(auth, email, password)
                 .then( async (userCredential) => {
                     const dbref = doc(firestore_database,"User",userCredential.user.uid)
@@ -67,6 +70,7 @@ const Navbar = () => {
                         password: password,
                         role:snapshot.data().role
                     }
+                    login.current.style.opacity=.5
                     let message = `Welcome Back , ${user.displayName}`
                     dispatch(AddUser(usr))
                     setOpenModal(false);
@@ -75,16 +79,18 @@ const Navbar = () => {
                     // ...
                 })
                 .catch((error) => {
+                    login.current.style.opacity=1
                     toast.error (error.code)
-                    return false
                 });
         } else {
+            signup.current.style.opacity=0.5
             await createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     // Signed up
                     updateProfile(auth.currentUser, {
                         displayName: username,
-                    }).then(() => {
+                    }).then(async () => {
+
                         // Profile updated!
                         const user = userCredential.user;
                         const usr = {
@@ -93,6 +99,18 @@ const Navbar = () => {
                             password: password,
                             role:role
                         }
+                        const docref = doc(firestore_database,'User',user.uid);
+                        const obj = {
+                            email:user.email,
+                            role:role
+                        }
+                        FetchComponents({
+                            uid:userCredential.user.uid,
+                            username:username,
+                            role:role
+                        })
+                        await setDoc(docref,obj)
+                        signup.current.style.opacity=1
                         let message = `Welcome Back , ${user.displayName}`
                         dispatch(AddUser(usr));
                         setOpenModal(false)
@@ -101,27 +119,17 @@ const Navbar = () => {
                         setEmail('')
                         notification(message)
                     }).then(
-                        (user) => {
-                            console.log(user.uid)
-                            const docref = doc(firestore_database,'User',user.uid);
-                            const obj = {
-                                email:user.email,
-                                role:role
-                            }
-                             setDoc(docref,obj)
 
-
-                        }
                     )
                         .catch((error) => {
                         // An error occurred
+                            signup.current.style.opacity=1
                         toast.error(error.code);
-                        return false
                     });
                 })
                 .catch((error) => {
+                    signup.current.style.opacity=1
                     toast.error(error.code)
-                    return false
                 });
 
         }
@@ -151,9 +159,7 @@ const Navbar = () => {
                                 password: data.get('password') ?? ''
                             }
 
-                            check_auth(obj).then(
-
-                            );
+                            check_auth(obj)
 
 
                         }
@@ -232,8 +238,8 @@ const Navbar = () => {
                             <div className="w-full">
 
                                 {
-                                    signupModal ? <Button type={'submit'}>SignUp</Button> :
-                                        <Button type={'submit'}>Log in to your account</Button>
+                                    signupModal ? <Button type={'submit'} ref={signup}>SignUp</Button> :
+                                        <Button type={'submit'} ref={login} >Log in to your account</Button>
                                 }
 
                             </div>
@@ -331,7 +337,7 @@ const Navbar = () => {
                                                         src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80"
                                                         className="object-cover w-full h-full" alt="avatar"/>
                                                 </div>
-                                                <h3 className="mx-2 text-gray-100 lg:hidden">Khatab wedaa</h3>
+                                                <h3 className="mx-2 text-gray-100 lg:hidden">{user.username }</h3>
                                             </button>
                                         </div>
                                     </div>
