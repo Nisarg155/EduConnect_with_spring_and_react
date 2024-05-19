@@ -9,14 +9,10 @@ export function FetchComponents(user)
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                teacher_id:user.uid,
-                name:user.username
+                teacher_id: user.uid,
+                name: user.username
             })
-        }).then(
-            (response) => {
-                console.log(response.json());
-            }
-        )
+        })
     }
     else if(user.role === 'Student')
     {
@@ -30,12 +26,9 @@ export function FetchComponents(user)
                 student_id:user.uid,
                 name:user.username
             })
-        }).then(
-            (response) => {
-                console.log(response.json());
-            }
-        )
+        })
 
     }
 }
+
 

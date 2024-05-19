@@ -65,6 +65,7 @@ const Navbar = () => {
                     // Signed in
                     const user = userCredential.user;
                     const usr = {
+                        uid:userCredential.user.uid,
                         username: user.displayName,
                         email: user.email,
                         password: password,
@@ -94,6 +95,7 @@ const Navbar = () => {
                         // Profile updated!
                         const user = userCredential.user;
                         const usr = {
+                            uid:user.uid,
                             username: username,
                             email: user.email,
                             password: password,
@@ -343,6 +345,7 @@ const Navbar = () => {
                                     </div>
                                 ) :
                                 <Button onClick={() => setOpenModal(true)} color="blue"> <b>Sign In</b> </Button>
+
 
                         }
 
