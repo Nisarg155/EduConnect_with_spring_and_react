@@ -1,24 +1,26 @@
-import React from "react";
+import { Button, Card } from "flowbite-react";
 
-const Card = () => {
-  return (
-    <div class="w-full max-w-sm overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800">
-      <img class="object-cover object-center w-full h-56" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80" alt="avatar" />
+export function Card_(props) {
+    return (
+        <Card className="max-w-sm mr-8 ml-8 mb-8 mt-8" >
+            <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                Noteworthy technology acquisitions 2021
+            </h5>
+            <p className="font-normal text-gray-700 dark:text-gray-400">
+                Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.
+            </p>
+            <Button>
+                Read more
+                <svg className="-mr-1 ml-2 h-4 w-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        fillRule="evenodd"
+                        d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                    />
+                </svg>
+            </Button>
+        </Card>
+    );
+}
 
-      <div class="flex items-center justify-between px-6 py-3 bg-gray-900">
-        <i class="material-icons w3-xxxlarge">person</i>
-
-        <h1 class="mx-3 text-lg text-center font-semibold text-white">Java Technologies</h1>
-      </div>
-
-      <div class="px-6 py-4">
-        <h1 class="text-xl font-semibold text-gray-800 dark:text-white">Vaibhav Dhanani</h1>
-
-        <p class="py-2 text-gray-700 dark:text-gray-400">Some descrption about Teacher and Subject</p>
-
-      </div>
-    </div>
-  );
-};
-
-export default Card;
+export default Card_

@@ -2,10 +2,7 @@ package org.backend.backend.model;
 
 import com.google.j2objc.annotations.Property;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.Optional;
 
 @Document
 public class Classes {
@@ -15,8 +12,10 @@ public class Classes {
     private String name;
     @Property
     private String description;
-    @DBRef
-    private Teacher teacher;
+    @Property
+    private String teacher_id;
+    @Property
+    private String teacher_name;
 
     public Classes() {
 
@@ -26,8 +25,8 @@ public class Classes {
         return class_id;
     }
 
-    public Classes(Teacher teacher) {
-        this.teacher = teacher;
+    public Classes(String String) {
+        this.teacher_id = String;
     }
 
     public void setClass_id(String class_id) {
@@ -52,12 +51,12 @@ public class Classes {
         this.description = description;
     }
 
-    public Teacher getTeacher() {
-        return teacher;
+    public String getTeacher_id() {
+        return teacher_id;
     }
 
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
+    public void setTeacher_id(String teacher_id) {
+        this.teacher_id = teacher_id;
     }
 
     @Override
@@ -66,7 +65,16 @@ public class Classes {
                 "id='" + class_id + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", teacher=" + teacher +
+                ", teacher_id=" + teacher_id + '\'' +
+                ", teacher_name" + teacher_name +
                 '}';
+    }
+
+    public String getTeacher_name() {
+        return teacher_name;
+    }
+
+    public void setTeacher_name(String teacher_name) {
+        this.teacher_name = teacher_name;
     }
 }

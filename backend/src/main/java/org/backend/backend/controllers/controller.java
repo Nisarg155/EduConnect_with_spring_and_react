@@ -6,18 +6,17 @@ import org.backend.backend.model.Student;
 import org.backend.backend.model.Teacher;
 import org.backend.backend.repositories.Class_repo;
 import org.backend.backend.repositories.Teacher_repo;
+import org.backend.backend.repositories.Student_repo;
 import org.backend.backend.repositories.firebase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.backend.backend.repositories.Student_repo;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/api")
@@ -39,6 +38,31 @@ public class controller {
         class_repo = classRepo;
     }
 
+    public String generateRandomCode() {
+        int leftLimit = 48; // '0'
+        int rightLimit = 122; // 'z'
+
+        // Exclude characters that are not alphanumeric
+        int excludedCharCount = rightLimit - 57 + 1; // Range of non-alphanumeric characters (from ':' to '[')
+        rightLimit -= excludedCharCount;
+
+        int length = 8;
+        Random random = new Random();
+        StringBuilder builder = new StringBuilder(length);
+
+        while (builder.length() < length) {
+            int randomLimitedInt = leftLimit + (int) (random.nextDouble() * (rightLimit - leftLimit + 1));
+            char c = (char) randomLimitedInt;
+
+            // Ensure character is alphanumeric before appending
+            if (Character.isLetterOrDigit(c)) {
+                builder.append(c);
+            }
+        }
+
+        return builder.toString();
+    }
+
 
 
     @PostMapping("/student/create")
@@ -54,27 +78,32 @@ public class controller {
      }
 
 
-    @PostMapping("/classes/create/{uid}")
-    public ResponseEntity<List<Classes>> create_new_class(@RequestBody Classes classes , @PathVariable String uid) throws NoSuchElementException
+    @PostMapping("/classes/create/{uid}/{name}")
+    public ResponseEntity<List<Classes>> create_new_class(@RequestBody Classes classes , @PathVariable String uid , @PathVariable String name) throws NoSuchElementException
     {
-        Teacher teacher = teacher_repo.findById(uid).get(); // finds the teacher based on uid
-        classes.setTeacher(teacher);
+         // finds the teacher based on uid
+        classes.setTeacher_id(uid);
+        classes.setTeacher_name(name);
+        classes.setClass_id(generateRandomCode());
         class_repo.save(classes);
 
-        Query query = new Query();
-        query.addCriteria(Criteria.where("teacher.$id").is(uid));
-        List<Classes> classesList,list_with_id;
-        classesList = class_repo.findAll();
-        list_with_id = classesList.stream().filter(
-                c -> c.getTeacher().getTeacher_id().equals(uid)
-        ).toList();
-        for(Classes c : list_with_id)
+
+        List<Classes> classesLis ;
+        classesLis = class_repo.findClassesByTeacher_id(uid);
+        return ResponseEntity.ok(classesLis);
+    }
+
+    @GetMapping("/classes/get_all/{uid}/{role}")
+    public ResponseEntity<List<Classes>> get_all_classes(@PathVariable String uid, @PathVariable String role)
+    {
+        List<Classes> classesList  ;
+        if(role.equals("Teacher"))
         {
-            System.out.println(c.toString());
+            classesList = class_repo.findClassesByTeacher_id(uid);
+            return ResponseEntity.ok(classesList);
         }
-        return ResponseEntity.ok(list_with_id);
-
-
+        classesList = class_repo.findAll();
+        return ResponseEntity.ok(classesList);
     }
 //     @PostMapping("teacher/create")
 //     public

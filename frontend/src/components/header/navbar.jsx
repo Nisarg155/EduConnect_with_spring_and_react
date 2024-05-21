@@ -2,12 +2,13 @@ import {useRef, useState} from 'react';
 import {Button, Label, Modal, TextInput} from "flowbite-react";
 import {useDispatch, useSelector} from "react-redux";
 import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, updateProfile} from 'firebase/auth';
-import {getFirestore , setDoc , doc , getDoc } from 'firebase/firestore'
+import {doc, getDoc, getFirestore, setDoc} from 'firebase/firestore'
 import app from "../../firebase/config.jsx";
 import {AddUser} from "../../redux/reducer/loginslice.jsx";
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {FetchComponents} from "../../fetch_components/fetchComponents.jsx";
+import {HiMail} from "react-icons/hi";
 
 
 const auth = getAuth(app);
@@ -24,6 +25,7 @@ const Navbar = () => {
     const signup = useRef(null);
 
     const [email, setEmail] = useState('');
+    console.log(user)
 
     function onCloseModal() {
         setOpenModal(false);
@@ -47,7 +49,7 @@ const Navbar = () => {
         })
     }
 
-    const check_auth = async  (obj) => {
+    const check_auth = async (obj) => {
         const email = obj.email;
         const password = obj.password;
         const username = obj.username;
@@ -55,23 +57,22 @@ const Navbar = () => {
 
 
         if (!signupModal) {
-            login.current.style.opacity=0.5
+            login.current.style.opacity = 0.5
             await signInWithEmailAndPassword(auth, email, password)
-                .then( async (userCredential) => {
-                    const dbref = doc(firestore_database,"User",userCredential.user.uid)
+                .then(async (userCredential) => {
+                    const dbref = doc(firestore_database, "User", userCredential.user.uid)
                     let snapshot = await getDoc(dbref)
-                    if(!snapshot.exists()) throw Error("Error Retrieving  Role")
+                    if (!snapshot.exists()) throw Error("Error Retrieving  Role")
 
                     // Signed in
                     const user = userCredential.user;
                     const usr = {
-                        uid:userCredential.user.uid,
+                        uid: userCredential.user.uid,
                         username: user.displayName,
                         email: user.email,
-                        password: password,
-                        role:snapshot.data().role
+                        role: snapshot.data().role
                     }
-                    login.current.style.opacity=.5
+                    login.current.style.opacity = .5
                     let message = `Welcome Back , ${user.displayName}`
                     dispatch(AddUser(usr))
                     setOpenModal(false);
@@ -80,11 +81,11 @@ const Navbar = () => {
                     // ...
                 })
                 .catch((error) => {
-                    login.current.style.opacity=1
-                    toast.error (error.code)
+                    login.current.style.opacity = 1
+                    toast.error(error.code)
                 });
         } else {
-            signup.current.style.opacity=0.5
+            signup.current.style.opacity = 0.5
             await createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     // Signed up
@@ -95,24 +96,23 @@ const Navbar = () => {
                         // Profile updated!
                         const user = userCredential.user;
                         const usr = {
-                            uid:user.uid,
+                            uid: user.uid,
                             username: username,
                             email: user.email,
-                            password: password,
-                            role:role
+                            role: role
                         }
-                        const docref = doc(firestore_database,'User',user.uid);
+                        const docref = doc(firestore_database, 'User', user.uid);
                         const obj = {
-                            email:user.email,
-                            role:role
+                            email: user.email,
+                            role: role
                         }
                         FetchComponents({
-                            uid:userCredential.user.uid,
-                            username:username,
-                            role:role
+                            uid: userCredential.user.uid,
+                            username: username,
+                            role: role
                         })
-                        await setDoc(docref,obj)
-                        signup.current.style.opacity=1
+                        await setDoc(docref, obj)
+                        signup.current.style.opacity = 1
                         let message = `Welcome Back , ${user.displayName}`
                         dispatch(AddUser(usr));
                         setOpenModal(false)
@@ -124,13 +124,13 @@ const Navbar = () => {
 
                     )
                         .catch((error) => {
-                        // An error occurred
-                            signup.current.style.opacity=1
-                        toast.error(error.code);
-                    });
+                            // An error occurred
+                            signup.current.style.opacity = 1
+                            toast.error(error.code);
+                        });
                 })
                 .catch((error) => {
-                    signup.current.style.opacity=1
+                    signup.current.style.opacity = 1
                     toast.error(error.code)
                 });
 
@@ -150,12 +150,12 @@ const Navbar = () => {
                         (event) => {
                             event.preventDefault();
                             const data = new FormData(event.target);
-                            if(signupModal && (data.get('role') === 'none' )) {
+                            if (signupModal && (data.get('role') === 'none')) {
                                 toast.error("Please Select Role")
                                 return
                             }
                             const obj = {
-                                role:data.get('role') ?? '',
+                                role: data.get('role') ?? '',
                                 username: data.get('username') ?? '',
                                 email: data.get('email') ?? '',
                                 password: data.get('password') ?? ''
@@ -177,6 +177,7 @@ const Navbar = () => {
                                             <Label htmlFor="username" value="Your username"/>
                                         </div>
                                         <TextInput
+                                            addon="@"
                                             id="username"
                                             placeholder="xyz"
                                             value={username}
@@ -198,6 +199,7 @@ const Navbar = () => {
                                     value={email}
                                     onChange={(event) => setEmail(event.target.value)}
                                     name={'email'}
+                                    rightIcon={HiMail}
                                     required
                                 />
                             </div>
@@ -225,12 +227,12 @@ const Navbar = () => {
                                 {
                                     signupModal ?
                                         <div>
-                                        <label htmlFor={"role"}/>
-                                        <select name={"role"} id={"role"}>
-                                            <option value={"none"}>Select Role</option>
-                                            <option value={"Teacher"}>Teacher</option>
-                                            <option value={"Student"}>Student</option>
-                                        </select>
+                                            <label htmlFor={"role"}/>
+                                            <select name={"role"} id={"role"}>
+                                                <option value={"none"}>Select Role</option>
+                                                <option value={"Teacher"}>Teacher</option>
+                                                <option value={"Student"}>Student</option>
+                                            </select>
                                         </div>
                                         :
                                         null
@@ -241,7 +243,7 @@ const Navbar = () => {
 
                                 {
                                     signupModal ? <Button type={'submit'} ref={signup}>SignUp</Button> :
-                                        <Button type={'submit'} ref={login} >Log in to your account</Button>
+                                        <Button type={'submit'} ref={login}>Log in to your account</Button>
                                 }
 
                             </div>
@@ -339,7 +341,7 @@ const Navbar = () => {
                                                         src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80"
                                                         className="object-cover w-full h-full" alt="avatar"/>
                                                 </div>
-                                                <h3 className="mx-2 text-gray-100 lg:hidden">{user.username }</h3>
+                                                <h3 className="mx-2 text-gray-100 lg:hidden">{user.username}</h3>
                                             </button>
                                         </div>
                                     </div>
