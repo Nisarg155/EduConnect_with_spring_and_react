@@ -78,13 +78,25 @@ public class controller {
      }
 
 
+     @DeleteMapping("/classes/delete/{code}/{uid}")
+     public ResponseEntity<List<Classes>> delete_class(@PathVariable String code , @PathVariable String uid)
+     {
+         class_repo.deleteById(code);
+         return ResponseEntity.ok(class_repo.findClassesByTeacher_id(uid));
+     }
+
     @PostMapping("/classes/create/{uid}/{name}")
     public ResponseEntity<List<Classes>> create_new_class(@RequestBody Classes classes , @PathVariable String uid , @PathVariable String name) throws NoSuchElementException
     {
          // finds the teacher based on uid
         classes.setTeacher_id(uid);
         classes.setTeacher_name(name);
-        classes.setClass_id(generateRandomCode());
+        String code = generateRandomCode();
+        while(class_repo.findById(code).isPresent())
+        {
+            code = generateRandomCode();
+        }
+        classes.setClass_id(code);
         class_repo.save(classes);
 
 

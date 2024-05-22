@@ -31,7 +31,7 @@ export function FetchComponents(user)
     }
 }
 
-const CreateClassFetch = (data) => {
+export const CreateClassFetch = (data) => {
 
     console.log(data)
     return fetch(`http://localhost:8080/api/classes/create/${data.uid}/${data.teacher_name}`
@@ -55,6 +55,17 @@ const CreateClassFetch = (data) => {
         );
 }
 
-export default CreateClassFetch;
+export const DeleteClass = (data) => {
+
+    return fetch(`http://localhost:8080/api/classes/delete/${data.code}/${data.uid}` , {
+        method:'DELETE'
+    })
+
+
+}
+
+
+
+
 
 

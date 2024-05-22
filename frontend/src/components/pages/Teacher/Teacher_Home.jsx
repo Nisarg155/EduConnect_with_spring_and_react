@@ -1,12 +1,13 @@
 import {useEffect, useState} from "react";
 import {toast, ToastContainer} from "react-toastify";
 import {useSelector} from "react-redux";
-import {Button, Card, Modal} from "flowbite-react";
+import {Button, Card, Modal, Popover} from "flowbite-react";
 import {HiPlus} from 'react-icons/hi'
+import { MdModeEdit } from "react-icons/md";
 import {Grid} from "react-loader-spinner";
-import CreateClassFetch from "../../../fetch_components/fetchComponents.jsx";
+import {CreateClassFetch  , DeleteClass }from "../../../fetch_components/fetchComponents.jsx";
 import CreateClass from "../../forms/createClass.jsx";
-
+import { FaTrash ,FaInfoCircle } from "react-icons/fa";
 
 
 
@@ -49,6 +50,19 @@ const Teacher_Home = () => {
         setOpenModal(!openModal)
     }
 
+    const deleteClass = (data) => {
+        let response =  DeleteClass(data)
+
+        response.then(( response) => {
+
+            response.json().then(
+                (value) => {
+                    setClasses(value)
+                }
+            )
+        })
+
+    }
     return (
         <div>
 
@@ -92,7 +106,7 @@ const Teacher_Home = () => {
 
             <div className="flex flex-wrap gap-2 mt-6 justify-end">
                 <Button gradientMonochrome="info" className={'lg:mr-40 mr-8 '} onClick={toggleModal}>
-                    <HiPlus className="mr-2 h-5 w-5"/> <b>Add Class</b>
+                    <HiPlus className="mr-2 h-5 w-5"/> <b style={{fontSize:'medium' }}>Add Class</b>
                 </Button>
             </div>
 
@@ -109,10 +123,11 @@ const Teacher_Home = () => {
                             wrapperStyle={{}}
                             wrapperClass="grid-wrapper"
                         /></div> :
-                    <div style={{display: "flex", flexWrap: "wrap", justifyContent: "start", alignItems: 'stretch'}}
-                         className={"mr-4 ml-4   "}>
+                    <div>
                         {
                             classes.length === 0 ?
+                                <div style={{display: "flex", flexWrap: "wrap", justifyContent:'center',  alignItems: 'stretch'}} className={"mr-4 ml-4   "}>
+
                                 <div className={'mt-40'}>
                                     <h1 className="text-5xl md:text-8xl font-extrabold leading-tighter tracking-tighter mb-8"
                                         data-aos="zoom-y-out"><span
@@ -120,13 +135,14 @@ const Teacher_Home = () => {
                                     </h1>
                                     <h3 className="text-5xl md:text-8xl font-extrabold leading-tighter tracking-tighter mb-4">Create
                                         New Class </h3>
-                                </div> :
-
-                                classes.map((card, index) =>
+                                </div>
+                                </div>:
+                                <div style={{display: "flex", flexWrap: "wrap", justifyContent:'start',  alignItems: 'stretch'}} className={"mr-4 ml-4   "}>
+                                    {
+                                        classes.map((card) =>
                                     (
                                         <Card className="max-w-sm mr-8 ml-8 mb-8 mt-8 "
-                                              style={{width: "25rem", height: "15rem"}} key={index}>
-
+                                              style={{width: "25rem", height: "15rem"}} key={card.class_id}>
                                             <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white "
                                                 style={{marginTop: "-100px"}}>
                                                 {card.name}
@@ -145,17 +161,46 @@ const Teacher_Home = () => {
                                                 </p>
                                             </div>
 
-                                            <div style={{marginBottom: '-100px'}}>
-                                                <Button>
-                                                    Read more
-                                                    <svg className="-mr-1 ml-2 h-4 w-4" fill="currentColor"
-                                                         viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                        <path
-                                                            fillRule="evenodd"
-                                                            d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                                                            clipRule="evenodd"
-                                                        />
-                                                    </svg>
+                                            <div style={{marginBottom: '-100px' , display:'flex' , flexWrap:'wrap' , justifyContent:'space-between' }} >
+                                                <Button >
+                                                    <b style={{fontSize:'medium' }}>
+                                                        Edit
+                                                    </b>
+                                                    <MdModeEdit className="ml-2 h-5 w-5"/>
+                                                </Button>
+                                                <Popover content={
+                                                    <div className="w-auto text-sm text-gray-500 dark:text-gray-400">
+                                                        <div
+                                                            className="border-b border-gray-200 bg-gray-100 px-3 py-2 dark:border-gray-600 dark:bg-gray-700">
+                                                            <h3 className="font-semibold text-gray-900 dark:text-white">
+                                                                <b style={{fontSize:'medium' }}>
+                                                                    {card.class_id}
+                                                                </b>
+                                                                    </h3>
+                                                        </div>
+                                                    </div>
+                                                } placement={"bottom"}>
+
+
+                                                <Button color={'success'}>
+                                                    <b style={{fontSize: 'medium'}}>
+                                                        Code
+                                                    </b>
+                                                    <FaInfoCircle className="ml-2 h-5 w-5"/>
+                                                </Button>
+                                                </Popover>
+                                                <Button  color="failure"   onClick={
+                                                    () => {
+                                                        deleteClass({
+                                                            uid:user.uid,
+                                                            code:card.class_id
+                                                        })
+                                                    }
+                                                }>
+                                                    <b style={{fontSize:'medium' }}>
+                                                        Delete
+                                                    </b>
+                                                    <FaTrash className="ml-3 h-5 w-5"/>
                                                 </Button>
                                             </div>
                                         </Card>
@@ -163,6 +208,8 @@ const Teacher_Home = () => {
 
                                     )
                                 )
+                                    }
+                                </div>
                         }
                     </div>
             }
