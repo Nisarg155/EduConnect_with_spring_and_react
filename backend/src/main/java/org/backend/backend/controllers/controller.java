@@ -9,8 +9,6 @@ import org.backend.backend.repositories.Teacher_repo;
 import org.backend.backend.repositories.Student_repo;
 import org.backend.backend.repositories.firebase;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -105,6 +103,8 @@ public class controller {
         return ResponseEntity.ok(classesLis);
     }
 
+
+
     @GetMapping("/classes/get_all/{uid}/{role}")
     public ResponseEntity<List<Classes>> get_all_classes(@PathVariable String uid, @PathVariable String role)
     {
@@ -117,6 +117,18 @@ public class controller {
         classesList = class_repo.findAll();
         return ResponseEntity.ok(classesList);
     }
+
+    @PutMapping("/classes/edit")
+    public ResponseEntity<List<Classes>> edit_class(@RequestBody Classes classes)
+    {
+        List<Classes> classesList;
+        class_repo.save(classes);
+        classesList = class_repo.findClassesByTeacher_id(classes.getTeacher_id());
+
+        return ResponseEntity.ok(classesList);
+
+    }
+
 //     @PostMapping("teacher/create")
 //     public
 //

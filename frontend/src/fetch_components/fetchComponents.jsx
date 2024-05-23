@@ -60,7 +60,26 @@ export const DeleteClass = (data) => {
     return fetch(`http://localhost:8080/api/classes/delete/${data.code}/${data.uid}` , {
         method:'DELETE'
     })
+}
 
+export const UpdateClass = (data) => {
+
+    return fetch('http://localhost:8080/api/classes/edit' , {
+        method:'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body:JSON.stringify(
+            {
+                class_id: data.code,
+                name: data.name,
+                description: data.description,
+                teacher_id: data.teacher_id,
+                teacher_name: data.teacher_name
+            }
+        )
+    })
 
 }
 

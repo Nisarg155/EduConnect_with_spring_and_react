@@ -3,7 +3,7 @@ import {MdTitle} from "react-icons/md";
 import { useState} from "react";
 
 const CreateClass =  () => {
-    const [email, setEmail] = useState('')
+    const [title, setTitle] = useState('')
 
     return (
         <div className="space-y-6">
@@ -11,6 +11,7 @@ const CreateClass =  () => {
                 Create New Class</h3>
             <div>
                 <div className="mb-2 block">
+
                     <Label htmlFor="title" className={'text-lg'} value="Class Name"/>
                 </div>
                 <TextInput
@@ -18,8 +19,8 @@ const CreateClass =  () => {
                     id="title"
                     name={'title'}
                     placeholder="title"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
+                    value={title}
+                    onChange={(event) => setTitle(event.target.value)}
                     required
                 />
             </div>

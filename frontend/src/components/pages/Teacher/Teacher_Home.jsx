@@ -8,6 +8,7 @@ import {Grid} from "react-loader-spinner";
 import {CreateClassFetch  , DeleteClass }from "../../../fetch_components/fetchComponents.jsx";
 import CreateClass from "../../forms/createClass.jsx";
 import { FaTrash ,FaInfoCircle } from "react-icons/fa";
+import EditClass from "../../forms/EditClass.jsx";
 
 
 
@@ -17,7 +18,10 @@ const Teacher_Home = () => {
     )
     const [classes, setClasses] = useState([])
     const [sliding, setSliding] = useState(true)
-    const [openModal, setOpenModal] = useState(false)
+    const [createclassmodal, setCreateclassmodal] = useState(false)
+    const [editclassmodal, setEditclassmodal] = useState(false)
+    const [editclassdata, setEditclassdata] = useState({})
+
 
     useEffect(() => {
         try {
@@ -43,11 +47,16 @@ const Teacher_Home = () => {
     }, []);
 
     const onCloseModal = () => {
-        setOpenModal(false)
+        setCreateclassmodal(false)
+    }
+
+    const onCloseModalEdit = () => {
+        setEditclassmodal(false);
+        setEditclassdata({})
     }
 
     const toggleModal = () => {
-        setOpenModal(!openModal)
+        setCreateclassmodal(!createclassmodal)
     }
 
     const deleteClass = (data) => {
@@ -63,13 +72,15 @@ const Teacher_Home = () => {
         })
 
     }
+
+
     return (
         <div>
 
 
 
 
-            <Modal show={openModal} size="md" onClose={onCloseModal} popup>
+            <Modal show={createclassmodal} size="md" onClose={onCloseModal} popup>
                 <Modal.Header />
                 <Modal.Body>
                     <form onSubmit={
@@ -89,7 +100,7 @@ const Teacher_Home = () => {
                                         response.json().then(
                                             (value) => {
                                                 setClasses(value);
-                                                setOpenModal(false)
+                                                setCreateclassmodal(false)
                                             }
                                         )
                                     }
@@ -101,6 +112,15 @@ const Teacher_Home = () => {
                     </form>
                 </Modal.Body>
             </Modal>
+
+
+            <Modal show={editclassmodal} size="md" onClose={onCloseModalEdit} popup>
+                <Modal.Header />
+                <Modal.Body>
+                    <EditClass data={editclassdata} />
+                </Modal.Body>
+            </Modal>
+
 
 
 
@@ -162,7 +182,22 @@ const Teacher_Home = () => {
                                             </div>
 
                                             <div style={{marginBottom: '-100px' , display:'flex' , flexWrap:'wrap' , justifyContent:'space-between' }} >
-                                                <Button >
+                                                <Button onClick={
+                                                    () =>{
+                                                        setEditclassmodal(!editclassmodal)
+                                                        setEditclassdata(
+                                                            {
+                                                                code:card.class_id,
+                                                                name:card.name,
+                                                                description:card.description,
+                                                                setClasses:setClasses,
+                                                                setEditclassmodal:setEditclassmodal,
+                                                                teacher_id:card.teacher_id,
+                                                                teacher_name:card.teacher_name
+                                                            }
+                                                        )
+                                                    }
+                                                }>
                                                     <b style={{fontSize:'medium' }}>
                                                         Edit
                                                     </b>
@@ -204,8 +239,6 @@ const Teacher_Home = () => {
                                                 </Button>
                                             </div>
                                         </Card>
-
-
                                     )
                                 )
                                     }
