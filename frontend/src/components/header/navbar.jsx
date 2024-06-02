@@ -25,7 +25,6 @@ const Navbar = () => {
     const signup = useRef(null);
 
     const [email, setEmail] = useState('');
-    console.log(user)
 
     function onCloseModal() {
         setOpenModal(false);
@@ -43,7 +42,6 @@ const Navbar = () => {
     }
 
     const notification = (message) => {
-        console.log(message)
         toast.success(message, {
             autoClose: 3000
         })
@@ -72,6 +70,7 @@ const Navbar = () => {
                         email: user.email,
                         role: snapshot.data().role
                     }
+                    console.log(usr);
                     login.current.style.opacity = .5
                     let message = `Welcome Back , ${user.displayName}`
                     dispatch(AddUser(usr))
@@ -101,6 +100,7 @@ const Navbar = () => {
                             email: user.email,
                             role: role
                         }
+                        console.log(usr)
                         const docref = doc(firestore_database, 'User', user.uid);
                         const obj = {
                             email: user.email,

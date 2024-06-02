@@ -1,8 +1,14 @@
-import  {configureStore} from '@reduxjs/toolkit'
+import  {configureStore , } from '@reduxjs/toolkit'
 import UserReducer from './reducer/loginslice.jsx'
 
 import storage from 'redux-persist/lib/storage'
-import {persistReducer} from "redux-persist";
+import {persistReducer,
+    FLUSH,
+    REHYDRATE,
+    PAUSE,
+    PERSIST,
+    PURGE,
+    REGISTER,} from "redux-persist";
 
 
 const persistConfig = {
@@ -14,7 +20,13 @@ const Reducer = persistReducer(persistConfig,UserReducer);
 
 const store = configureStore(
     {
-        reducer:Reducer
+        reducer:Reducer,
+        middleware:getDefaultMiddleware =>
+            getDefaultMiddleware({
+                serializableCheck: {
+                    ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+                },
+            })
     }
 )
 

@@ -1,6 +1,6 @@
 export function FetchComponents(user)
 {
-    console.log(user)
+
     if(user.role === 'Teacher') {
         fetch('http://localhost:8080/api/teacher/create', {
             method: 'POST',
@@ -32,8 +32,6 @@ export function FetchComponents(user)
 }
 
 export const CreateClassFetch = (data) => {
-
-    console.log(data)
     return fetch(`http://localhost:8080/api/classes/create/${data.uid}/${data.teacher_name}`
         ,
         {
@@ -83,6 +81,20 @@ export const UpdateClass = (data) => {
 
 }
 
+
+export const UploadMaterialFetch  = async (data) =>
+{
+
+
+    fetch('http://localhost:8080/api/material/upload' ,{
+        method:'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body:JSON.stringify(data)
+    })
+}
 
 
 

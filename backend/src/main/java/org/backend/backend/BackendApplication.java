@@ -29,7 +29,6 @@ public class BackendApplication {
 				.build();
 
 		FirebaseApp.initializeApp(options);
-
 		SpringApplication.run(BackendApplication.class, args);
 	}
 

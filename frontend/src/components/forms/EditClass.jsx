@@ -11,7 +11,6 @@ const CreateClass = (data) => {
     const setEditclassmodal = data.data.setEditclassmodal
     const [title, setTitle] = useState(data.data.name)
     const [description, setDescription] = useState(data.data.description)
-    console.log(title , description)
     return (
 
         <form
@@ -24,7 +23,6 @@ const CreateClass = (data) => {
                     teacher_id:teacher_id,
                     teacher_name:teacher_name
                 }
-                console.log(data)
                 let response = UpdateClass(data)
                 response.then(
                     (response) => {
