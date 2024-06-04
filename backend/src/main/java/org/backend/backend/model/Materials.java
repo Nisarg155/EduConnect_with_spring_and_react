@@ -8,7 +8,8 @@ import java.util.List;
 
 @Document
 public class Materials {
-
+    @Id
+    private String id;
     @Property
     private String title;
     @Property
@@ -16,22 +17,27 @@ public class Materials {
     @Property
     private List<String> urls;
     @Property
+    private List<String> file_names;
+    @Property
     private String class_id;
 
 
-    public Materials(String title, String description, List<String> urls, String class_id) {
+    public Materials(String title, String description, List<String> urls, List<String> fileNames, String class_id) {
         this.title = title;
         this.description = description;
         this.urls = urls;
+        file_names = fileNames;
         this.class_id = class_id;
     }
 
     @Override
     public String toString() {
         return "Materials{" +
-                "title='" + title + '\'' +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", urls=" + urls +
+                ", file_names=" + file_names +
                 ", class_id='" + class_id + '\'' +
                 '}';
     }
@@ -69,6 +75,14 @@ public class Materials {
 
     public void setUrls(List<String> urls) {
         this.urls = urls;
+    }
+
+    public List<String> getFile_names() {
+        return file_names;
+    }
+
+    public void setFile_names(List<String> file_names) {
+        this.file_names = file_names;
     }
 
 

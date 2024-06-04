@@ -125,10 +125,17 @@ public class controller {
         String title = data.get("title").toString();
         String description = data.get("description").toString();
         List<String> urls = (List<String>) data.get("urls");
-        Materials materials = new Materials(title, description, urls, class_code);
+        List<String> file_names = (List<String>) data.get("file_names");
+        Materials materials = new Materials(title, description, urls, file_names,class_code);
         materials_repo.save(materials);
         List<Materials> materialsList = materials_repo.findByClass_id(class_code);
         return ResponseEntity.ok(materialsList);
+    }
+
+    @GetMapping("/materials/{code}")
+    public ResponseEntity<List<Materials>> get_materials(@PathVariable String code)
+    {
+        return ResponseEntity.ok(materials_repo.findByClass_id(code));
     }
 
 //     @PostMapping("teacher/create")
