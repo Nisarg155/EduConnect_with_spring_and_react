@@ -4,7 +4,9 @@ import {useEffect, useState} from "react";
 import UploadMaterial from "../../forms/UploadMaterial.jsx";
 import {useNavigate, useParams} from "react-router-dom";
 import {FaTrash} from "react-icons/fa";
-import { CgDetailsMore } from "react-icons/cg";
+import {CgDetailsMore} from "react-icons/cg";
+import {deleteObject, getStorage, ref} from "firebase/storage";
+import {getAuth} from "firebase/auth";
 
 export function Teacher_Materials() {
     const [materialModal, setMaterialModal] = useState(false)
@@ -16,18 +18,47 @@ export function Teacher_Materials() {
     const [issubmited, setIssubmited] = useState(false)
     const [materials, setMaterials] = useState([])
     const navigate = useNavigate();
+    const storage = getStorage();
+    const deleteMaterial = (id, file_names) => {
+        console.log(file_names)
+        const auth = getAuth();
+        const uid = auth.currentUser.uid;
+
+        file_names.map((name) => {
+            const Ref = ref(storage, `Materials/${uid}/${class_id.code}/${name}`)
+            console.log(uid, name);
+            deleteObject(Ref).then(() => {
+
+                }
+            )
+        })
+        const responses = fetch(`http://localhost:8080/api/materials/${class_id.code}/${id}`,{
+            method:'DELETE'
+        })
+        responses.then(
+            (responses) => {
+                responses.json().then(
+                    (value) => {
+                        setMaterials(value);
+                    }
+                )
+            }
+        )
+    }
     useEffect(() => {
-        const response = fetch(`http://localhost:8080/api/materials/${class_id.code}`)
+        const response = fetch(`http://localhost:8080/api/materials/${class_id.code}`,{})
         response.then(
             response => {
                 response.json().then(
                     (value) => {
                         setMaterials(value)
+                        console.log(value)
                     }
                 )
             }
         )
     }, []);
+
     return (
         <div>
 
@@ -109,11 +140,11 @@ export function Teacher_Materials() {
                 alignItems: 'stretch'
             }} className={"mr-4 ml-4   "}>
                 {
-                    materials.map((material, index) =>
+                    materials.map((material) =>
                         (
 
                             <Card className="max-w-sm mr-8 ml-8 mb-8 mt-8 "
-                                  style={{width: "25rem", height: "15rem"}} key={index}>
+                                  style={{width: "25rem", height: "15rem"}} key={material.code}>
                                 <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white "
                                     style={{marginTop: "-100px"}}>
                                     {material.title}
@@ -141,6 +172,7 @@ export function Teacher_Materials() {
 
                                     <Button color="failure" onClick={
                                         () => {
+                                            deleteMaterial(material.code, material.file_names)
                                         }
                                     }>
                                         <b style={{fontSize: 'medium'}}>
@@ -148,15 +180,18 @@ export function Teacher_Materials() {
                                         </b>
                                         <FaTrash className="ml-3 h-5 w-5"/>
                                     </Button>
-                                    <Button  onClick={
+                                    <Button onClick={
                                         () => {
-                                            navigate('/MaterialsDetails' , {state:{
-                                                urls:material.urls,
-                                                file_names: material.file_names
-                                                }})
+                                            navigate('/MaterialsDetails', {
+                                                state: {
+                                                    code: material.class_id,
+                                                    urls: material.urls,
+                                                    file_names: material.file_names
+                                                }
+                                            })
                                         }
                                     }>
-                                        <CgDetailsMore className="mr-3 h-5 w-5" />
+                                        <CgDetailsMore className="mr-3 h-5 w-5"/>
                                         <b style={{fontSize: 'medium'}}>
                                             Details
                                         </b>

@@ -20,14 +20,20 @@ public class Materials {
     private List<String> file_names;
     @Property
     private String class_id;
+    @Property
+    private String code;
 
 
-    public Materials(String title, String description, List<String> urls, List<String> fileNames, String class_id) {
+    public Materials(String title, String description, List<String> urls, List<String> fileNames, String class_id, String code) {
         this.title = title;
         this.description = description;
         this.urls = urls;
         file_names = fileNames;
         this.class_id = class_id;
+        this.code = code;
+    }
+
+    public Materials() {
     }
 
     @Override
@@ -39,7 +45,16 @@ public class Materials {
                 ", urls=" + urls +
                 ", file_names=" + file_names +
                 ", class_id='" + class_id + '\'' +
+                ", code='" + code + '\'' +
                 '}';
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getClass_id() {
@@ -50,7 +65,8 @@ public class Materials {
         this.class_id = class_id;
     }
 
-    public Materials() {
+    public Materials(String code) {
+        this.code = code;
     }
 
     public String getTitle() {

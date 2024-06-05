@@ -10,4 +10,9 @@ public interface Materials_repo extends MongoRepository<Materials, String> {
 
     @Query("{class_id: ?0}")
     List<Materials> findByClass_id(String class_id);
+
+    @Query("{code: ?0 }")
+    Materials findByCode(String code);
+
+
 }

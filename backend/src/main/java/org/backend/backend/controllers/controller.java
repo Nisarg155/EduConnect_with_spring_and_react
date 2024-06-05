@@ -1,6 +1,10 @@
 package org.backend.backend.controllers;
 
+import com.google.api.services.storage.Storage;
+import com.google.cloud.storage.Bucket;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.cloud.StorageClient;
+import com.google.firebase.internal.FirebaseService;
 import org.backend.backend.model.Classes;
 import org.backend.backend.model.Materials;
 import org.backend.backend.model.Student;
@@ -27,6 +31,7 @@ public class controller {
     private final Materials_repo materials_repo;
     firebase fbs;
     FirebaseApp firebaseApp = FirebaseApp.getInstance();
+
 
     @Autowired
     controller(Student_repo studentRepo, firebase fbs, Teacher_repo teacher_repo, Class_repo classRepo, Materials_repo materialsRepo) {
@@ -121,12 +126,17 @@ public class controller {
 
     @PostMapping("/material/upload")
     public ResponseEntity<List<Materials>> upload_material(@RequestBody Map<String, Object> data) {
+        String code = generateRandomCode();
+        while(materials_repo.findByCode(code) != null)
+        {
+            code = generateRandomCode();
+        }
         String class_code = data.get("code").toString();
         String title = data.get("title").toString();
         String description = data.get("description").toString();
         List<String> urls = (List<String>) data.get("urls");
         List<String> file_names = (List<String>) data.get("file_names");
-        Materials materials = new Materials(title, description, urls, file_names,class_code);
+        Materials materials = new Materials(title, description, urls, file_names,class_code,code);
         materials_repo.save(materials);
         List<Materials> materialsList = materials_repo.findByClass_id(class_code);
         return ResponseEntity.ok(materialsList);
@@ -135,7 +145,16 @@ public class controller {
     @GetMapping("materials/{code}")
     public ResponseEntity<List<Materials>> get_materials(@PathVariable String code)
     {
-        return ResponseEntity.ok(materials_repo.findByClass_id(code));
+        List<Materials> list = materials_repo.findByClass_id(code);
+        return ResponseEntity.ok(list);
+    }
+
+    @DeleteMapping("materials/{class_code}/{material_code}")
+    public ResponseEntity<List<Materials>> delete_material(@PathVariable String class_code, @PathVariable String material_code) {
+        Materials material = materials_repo.findByCode(material_code);
+        materials_repo.delete(material);
+        List<Materials> materialsList = materials_repo.findByClass_id(class_code);
+        return ResponseEntity.ok(materialsList);
     }
 
 //     @PostMapping("teacher/create")
