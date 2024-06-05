@@ -86,7 +86,7 @@ export const UploadMaterialFetch  = async (data) =>
 {
 
 
-    fetch('http://localhost:8080/api/material/upload' ,{
+    return fetch('http://localhost:8080/api/material/upload' ,{
         method:'POST',
         headers: {
             'Accept': 'application/json',

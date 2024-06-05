@@ -1,8 +1,10 @@
-import {Button, Modal, Table} from "flowbite-react";
+import {Button, Card, Modal, Table} from "flowbite-react";
 import {HiPlus} from "react-icons/hi";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import UploadMaterial from "../../forms/UploadMaterial.jsx";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
+import {FaTrash} from "react-icons/fa";
+import { CgDetailsMore } from "react-icons/cg";
 
 export function Teacher_Materials() {
     const [materialModal, setMaterialModal] = useState(false)
@@ -12,10 +14,24 @@ export function Teacher_Materials() {
     const [files, setFiles] = useState([])
     const class_id = useParams()
     const [issubmited, setIssubmited] = useState(false)
+    const [materials, setMaterials] = useState([])
+    const navigate = useNavigate();
+    useEffect(() => {
+        const response = fetch(`http://localhost:8080/api/materials/${class_id.code}`)
+        response.then(
+            response => {
+                response.json().then(
+                    (value) => {
+                        setMaterials(value)
+                    }
+                )
+            }
+        )
+    }, []);
     return (
         <div>
 
-
+            {/*Models */}
             <Modal show={materialModal} size="2xl" position={'center'} className={'flex flex-row '}
                    onClose={onCloseModal} popup>
                 <Modal.Header/>
@@ -25,9 +41,10 @@ export function Teacher_Materials() {
                             files: files,
                             setFiles: setFiles,
                             class_id: class_id.code,
-                            setIssubmited:setIssubmited,
-                            issubmited:issubmited,
-                            setMaterialModal:setMaterialModal
+                            setIssubmited: setIssubmited,
+                            issubmited: issubmited,
+                            setMaterialModal: setMaterialModal,
+                            setMaterials: setMaterials
                         }
                     }/>
                     {
@@ -85,7 +102,71 @@ export function Teacher_Materials() {
                     <HiPlus className="mr-2 h-5 w-5"/> <b style={{fontSize: 'medium'}}>Add Material</b>
                 </Button>
             </div>
+            <div style={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: 'start',
+                alignItems: 'stretch'
+            }} className={"mr-4 ml-4   "}>
+                {
+                    materials.map((material, index) =>
+                        (
 
+                            <Card className="max-w-sm mr-8 ml-8 mb-8 mt-8 "
+                                  style={{width: "25rem", height: "15rem"}} key={index}>
+                                <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white "
+                                    style={{marginTop: "-100px"}}>
+                                    {material.title}
+                                </h5>
+
+                                <div>
+                                    <p className="font-normal text-gray-700 dark:text-gray-400 break-words "
+                                       style={{
+                                           display: 'flex',
+                                           flexWrap: 'wrap',
+                                           wordBreak: "break-word",
+                                           wordWrap: 'break-word',
+                                           height: '70px'
+                                       }}>
+                                        {material.description}
+                                    </p>
+                                </div>
+                                <div style={{
+                                    marginBottom: '-100px',
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    justifyContent: 'space-between'
+                                }}
+                                >
+
+                                    <Button color="failure" onClick={
+                                        () => {
+                                        }
+                                    }>
+                                        <b style={{fontSize: 'medium'}}>
+                                            Delete
+                                        </b>
+                                        <FaTrash className="ml-3 h-5 w-5"/>
+                                    </Button>
+                                    <Button  onClick={
+                                        () => {
+                                            navigate('/MaterialsDetails' , {state:{
+                                                urls:material.urls,
+                                                file_names: material.file_names
+                                                }})
+                                        }
+                                    }>
+                                        <CgDetailsMore className="mr-3 h-5 w-5" />
+                                        <b style={{fontSize: 'medium'}}>
+                                            Details
+                                        </b>
+                                    </Button>
+                                </div>
+                            </Card>
+                        )
+                    )
+                }
+            </div>
         </div>
     )
 }

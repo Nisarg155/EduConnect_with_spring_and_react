@@ -132,7 +132,7 @@ public class controller {
         return ResponseEntity.ok(materialsList);
     }
 
-    @GetMapping("/materials/{code}")
+    @GetMapping("materials/{code}")
     public ResponseEntity<List<Materials>> get_materials(@PathVariable String code)
     {
         return ResponseEntity.ok(materials_repo.findByClass_id(code));

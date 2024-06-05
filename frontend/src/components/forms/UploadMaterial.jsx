@@ -1,6 +1,5 @@
 import {Button, FileInput, Label, Progress, Textarea, TextInput} from "flowbite-react";
 import {MdTitle} from "react-icons/md";
-import {useSelector} from "react-redux";
 import {getAuth} from "firebase/auth";
 import {getStorage, ref, uploadBytes , getDownloadURL} from "firebase/storage";
 import {useState} from "react";
@@ -9,6 +8,8 @@ const UploadMaterial = (props) => {
     // eslint-disable-next-line react/prop-types
     const files = props.props.files    // eslint-disable-next-line react/prop-types
     const setfiles = props.props.setFiles
+    // eslint-disable-next-line react/prop-types
+    const setMaterials = props.props.setMaterials
 // eslint-disable-next-line react/prop-types
     const setIssubmited = props.props.setIssubmited
     // eslint-disable-next-line react/prop-types
@@ -21,6 +22,7 @@ const UploadMaterial = (props) => {
         let length = data.files.length
         let progress = 0;
         let urls = [];
+        let file_names = [];
          for (const file of data.files) {
              const storageRef = ref(storage, `Materials/${data.uid}/${data.code}/${file.name}`)
              await uploadBytes(storageRef, file).then(async () => {
@@ -28,6 +30,7 @@ const UploadMaterial = (props) => {
                  setProgressbar(progress / length * 100);
                  await getDownloadURL(storageRef).then(
                      (url) => {
+                         file_names.push((file.name).toString())
                          urls.push(url);
                      }
                  )
@@ -38,9 +41,15 @@ const UploadMaterial = (props) => {
              code: data.code,
              title: data.title,
              description: data.description,
-             urls:urls
+             urls:urls,
+             file_names:file_names
          }
-         await UploadMaterialFetch(upload_data)
+         const response= await UploadMaterialFetch(upload_data)
+        response.json().then(
+            (value) => {
+                setMaterials(value)
+            }
+        )
     }
     return (
         <div>
@@ -60,7 +69,8 @@ const UploadMaterial = (props) => {
                         files: files
                     }
 
-                    await upload(data);
+                      await upload(data);
+
                     setIssubmited(false)
                     setProgressbar(0)
                     setfiles([])
@@ -129,8 +139,6 @@ const UploadMaterial = (props) => {
                                 } className="hidden"/>
                             </Label>
                         </div>
-
-
                         <div className="w-full mt-8">
                             <Button type={'submit'}>
                                 <b style={{fontSize: 'medium'}}>Add
@@ -143,7 +151,6 @@ const UploadMaterial = (props) => {
                             />
                         </div>
                     </div>
-
                 </div>
             </form>
         </div>

@@ -17,7 +17,6 @@ export function Teacher_ClassDetails() {
                     </Tabs.Item>
                     <Tabs.Item title="Assignment" icon={MdAssignment}>
                     </Tabs.Item>
-
                 </Tabs>
             </div>
         </div>
