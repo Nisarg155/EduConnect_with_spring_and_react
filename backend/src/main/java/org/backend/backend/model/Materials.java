@@ -1,6 +1,5 @@
 package org.backend.backend.model;
 
-import com.google.j2objc.annotations.Property;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,17 +9,17 @@ import java.util.List;
 public class Materials {
     @Id
     private String id;
-    @Property
+
     private String title;
-    @Property
+
     private String description;
-    @Property
+
     private List<String> urls;
-    @Property
+
     private List<String> file_names;
-    @Property
+
     private String class_id;
-    @Property
+
     private String code;
 
 

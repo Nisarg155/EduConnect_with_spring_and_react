@@ -1,6 +1,5 @@
 package org.backend.backend.model;
 
-import com.google.j2objc.annotations.Property;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,13 +7,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Classes {
     @Id
     private String class_id;
-    @Property("name")
     private String name;
-    @Property
+    
     private String description;
-    @Property
+    
     private String teacher_id;
-    @Property
+    
     private String teacher_name;
 
     public Classes() {

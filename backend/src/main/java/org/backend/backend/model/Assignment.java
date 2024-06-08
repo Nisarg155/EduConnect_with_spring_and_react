@@ -1,6 +1,5 @@
 package org.backend.backend.model;
 
-import com.google.j2objc.annotations.Property;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,17 +9,17 @@ import java.util.Date;
 public class Assignment {
     @Id
     private String id;
-    @Property
+    
     private String title;
-    @Property
+    
     private String description;
-    @Property
+    
     private Date lastdate;
-    @Property
+    
     private boolean latesubmisssion;
-    @Property
+    
     private String unique_code;
-    @Property
+    
     private String class_code;
 
     public Assignment( String title, String description, Date lastdate, boolean latesubmisssion, String uniqueCode, String code) {

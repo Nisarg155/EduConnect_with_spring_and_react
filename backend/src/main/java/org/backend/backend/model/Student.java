@@ -1,6 +1,5 @@
 package org.backend.backend.model;
 
-import com.google.j2objc.annotations.Property;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -9,7 +8,6 @@ public class Student
 {
     @Id
     private String student_id;
-    @Property("name")
     private String name;
 
     public Student() {
