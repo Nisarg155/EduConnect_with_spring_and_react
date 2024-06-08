@@ -15,7 +15,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*")
 public class controller {
 
 
@@ -24,9 +24,6 @@ public class controller {
     private final Class_repo class_repo;
     private final Materials_repo materials_repo;
     private final Assignment assignment;
-
-
-
     @Autowired
     controller(Student_repo studentRepo, Teacher_repo teacher_repo, Class_repo classRepo, Materials_repo materialsRepo, Assignment assignment) {
         this.studentRepo = studentRepo;
