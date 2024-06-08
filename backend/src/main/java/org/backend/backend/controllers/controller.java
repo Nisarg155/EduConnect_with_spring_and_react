@@ -1,7 +1,7 @@
 package org.backend.backend.controllers;
 
 
-import com.google.firebase.FirebaseApp;
+
 import org.backend.backend.model.Classes;
 import org.backend.backend.model.Materials;
 import org.backend.backend.model.Student;
@@ -24,14 +24,12 @@ public class controller {
     private final Class_repo class_repo;
     private final Materials_repo materials_repo;
     private final Assignment assignment;
-    firebase fbs;
-    FirebaseApp firebaseApp = FirebaseApp.getInstance();
+
 
 
     @Autowired
-    controller(Student_repo studentRepo, firebase fbs, Teacher_repo teacher_repo, Class_repo classRepo, Materials_repo materialsRepo, Assignment assignment) {
+    controller(Student_repo studentRepo, Teacher_repo teacher_repo, Class_repo classRepo, Materials_repo materialsRepo, Assignment assignment) {
         this.studentRepo = studentRepo;
-        this.fbs = fbs;
         this.teacher_repo = teacher_repo;
         class_repo = classRepo;
         materials_repo = materialsRepo;

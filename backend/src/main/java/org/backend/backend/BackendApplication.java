@@ -22,17 +22,6 @@ public class BackendApplication {
 
 
 	public static void main(String[] args) throws IOException {
-		ClassLoader classLoader = BackendApplication.class.getClassLoader();
-		String path = Objects.requireNonNull(classLoader.getResource("serviceAccountKey.json")).getPath();
-		File file = new File(path);
-		FileInputStream serviceAccount =
-				new FileInputStream(file);
-		FirebaseOptions options = new FirebaseOptions.Builder()
-				.setCredentials(GoogleCredentials.fromStream(serviceAccount))
-				.setDatabaseUrl("https://educonnect-6789e-default-rtdb.firebaseio.com")
-				.build();
-
-		FirebaseApp.initializeApp(options);
 		SpringApplication.run(BackendApplication.class, args);
 	}
 
