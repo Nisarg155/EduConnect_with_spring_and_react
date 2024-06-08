@@ -96,6 +96,17 @@ export const UploadMaterialFetch  = async (data) =>
     })
 }
 
+export const CreateAssignmentFetch  = async (data,code) => {
+    return  fetch(`http://localhost:8080/api/Assignment/${code}`,{
+        method:'POST',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body:JSON.stringify(data)
+    })
+
+}
 
 
 

@@ -1,10 +1,7 @@
 package org.backend.backend.controllers;
 
-import com.google.api.services.storage.Storage;
-import com.google.cloud.storage.Bucket;
+
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.cloud.StorageClient;
-import com.google.firebase.internal.FirebaseService;
 import org.backend.backend.model.Classes;
 import org.backend.backend.model.Materials;
 import org.backend.backend.model.Student;
@@ -14,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Random;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -29,17 +23,19 @@ public class controller {
     private final Student_repo studentRepo;
     private final Class_repo class_repo;
     private final Materials_repo materials_repo;
+    private final Assignment assignment;
     firebase fbs;
     FirebaseApp firebaseApp = FirebaseApp.getInstance();
 
 
     @Autowired
-    controller(Student_repo studentRepo, firebase fbs, Teacher_repo teacher_repo, Class_repo classRepo, Materials_repo materialsRepo) {
+    controller(Student_repo studentRepo, firebase fbs, Teacher_repo teacher_repo, Class_repo classRepo, Materials_repo materialsRepo, Assignment assignment) {
         this.studentRepo = studentRepo;
         this.fbs = fbs;
         this.teacher_repo = teacher_repo;
         class_repo = classRepo;
         materials_repo = materialsRepo;
+        this.assignment = assignment;
     }
 
     public String generateRandomCode() {
@@ -156,6 +152,30 @@ public class controller {
         List<Materials> materialsList = materials_repo.findByClass_id(class_code);
         return ResponseEntity.ok(materialsList);
     }
+
+    @PostMapping("Assignment/{class__code}")
+    public ResponseEntity<List<org.backend.backend.model.Assignment>> add_assignment(@PathVariable String class__code, @RequestBody Map<String,Object> data) {
+
+        String code = generateRandomCode();
+
+        while(assignment.findByUniqueCode(code) != null)
+        {
+            code = generateRandomCode();
+        }
+        String title = data.get("title").toString();
+        String description = data.get("description").toString();
+//        Date lastdate = (Date) data.get("sub_date");
+        Date lastdate = new Date();
+        System.out.println(data.get("sub_date").toString());
+        boolean latesub = (boolean) data.get("late_sub");
+
+        org.backend.backend.model.Assignment assignment1 = new org.backend.backend.model.Assignment(title,description,lastdate,latesub,code, class__code);
+        assignment.save(assignment1);
+
+        return ResponseEntity.ok(assignment.findByClassCode(class__code));
+
+    }
+
 
 //     @PostMapping("teacher/create")
 //     public

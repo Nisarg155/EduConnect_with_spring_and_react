@@ -3,9 +3,8 @@ import {Tabs} from "flowbite-react";
 import {Teacher_Materials} from "./Teacher_Materials.jsx";
 import { FaBookOpen } from "react-icons/fa";
 import { MdAssignment } from "react-icons/md";
+import Teacher_Assignment from "./Teacher_Assignment.jsx";
 export function Teacher_ClassDetails() {
-    const code = useParams()
-
 
     return (
 
@@ -16,6 +15,7 @@ export function Teacher_ClassDetails() {
                         <Teacher_Materials/>
                     </Tabs.Item>
                     <Tabs.Item title="Assignment" icon={MdAssignment}>
+                        <Teacher_Assignment/>
                     </Tabs.Item>
                 </Tabs>
             </div>

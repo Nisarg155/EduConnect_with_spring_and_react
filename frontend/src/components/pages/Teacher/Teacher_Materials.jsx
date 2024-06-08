@@ -19,14 +19,13 @@ export function Teacher_Materials() {
     const [materials, setMaterials] = useState([])
     const navigate = useNavigate();
     const storage = getStorage();
+    const [deletemodal, setDeletemodal] = useState(false)
     const deleteMaterial = (id, file_names) => {
-        console.log(file_names)
         const auth = getAuth();
         const uid = auth.currentUser.uid;
 
         file_names.map((name) => {
             const Ref = ref(storage, `Materials/${uid}/${class_id.code}/${name}`)
-            console.log(uid, name);
             deleteObject(Ref).then(() => {
 
                 }
@@ -52,7 +51,6 @@ export function Teacher_Materials() {
                 response.json().then(
                     (value) => {
                         setMaterials(value)
-                        console.log(value)
                     }
                 )
             }
