@@ -2,11 +2,9 @@ package org.backend.backend.controllers;
 
 
 
-import org.backend.backend.model.Classes;
-import org.backend.backend.model.Materials;
-import org.backend.backend.model.Student;
-import org.backend.backend.model.Teacher;
+import org.backend.backend.model.*;
 import org.backend.backend.repositories.*;
+import org.backend.backend.repositories.Assignment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -210,7 +208,29 @@ public class controller {
             Optional<Classes> classes = class_repo.findById(code);
             return classes.map(value -> ResponseEntity.ok(Collections.singletonList(value))).orElseGet(() -> ResponseEntity.ok(null));
         }
+    }
 
+    @DeleteMapping("/RemoveClass/{uid}/{code}")
+    ResponseEntity<List<Classes>> class_remove(@PathVariable String uid, @PathVariable String code) {
+        Optional<Student_Class> student_class = studentClass.findById(uid);
+        if(student_class.isPresent())
+        {
+            List<String> codes = student_class.get().getCodes();
+            codes.remove(code);
+            student_class.get().setCodes(codes);
+            studentClass.save(student_class.get());
+            List<Classes> classesList = new ArrayList<>();
+            Optional<Classes> optionalClasses1 ;
+            for(String code1 : codes)
+            {
+                optionalClasses1 = class_repo.findById(code1);
+                optionalClasses1.ifPresent(classesList::add);
+            }
+            return ResponseEntity.ok(classesList);
+        }
+        else{
+            return ResponseEntity.ok(null);
+        }
     }
 
 
