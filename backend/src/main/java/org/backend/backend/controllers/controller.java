@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 @RestController
@@ -24,13 +25,15 @@ public class controller {
     private final Class_repo class_repo;
     private final Materials_repo materials_repo;
     private final Assignment assignment;
+    private final StudentClass studentClass;
     @Autowired
-    controller(Student_repo studentRepo, Teacher_repo teacher_repo, Class_repo classRepo, Materials_repo materialsRepo, Assignment assignment) {
+    controller(Student_repo studentRepo, Teacher_repo teacher_repo, Class_repo classRepo, Materials_repo materialsRepo, Assignment assignment, StudentClass studentClass) {
         this.studentRepo = studentRepo;
         this.teacher_repo = teacher_repo;
         class_repo = classRepo;
         materials_repo = materialsRepo;
         this.assignment = assignment;
+        this.studentClass = studentClass;
     }
 
     public String generateRandomCode() {
@@ -168,6 +171,45 @@ public class controller {
         assignment.save(assignment1);
 
         return ResponseEntity.ok(assignment.findByClassCode(class__code));
+
+    }
+
+    @PostMapping("JoinClass/{uid}/{code}")
+    ResponseEntity<List<Classes>> join_class(@PathVariable String uid, @PathVariable String code) {
+
+        Optional<Classes> optionalClasses = class_repo.findById(code);
+        if(optionalClasses.isEmpty()) return ResponseEntity.ok(null);
+
+        Optional<org.backend.backend.model.Student_Class> student_class = studentClass.findById(uid);
+        if(student_class.isPresent())
+        {
+            List<String> codes = student_class.get().getCodes();
+
+            if(codes.contains(code))
+            {
+                return ResponseEntity.ok(null);
+            }
+            codes.add(code);
+            student_class.get().setCodes(codes);
+            studentClass.save(student_class.get());
+
+            List<Classes> classesList = new ArrayList<>();
+            Optional<Classes> optionalClasses1 ;
+            for(String code1 : codes)
+            {
+                optionalClasses1 = class_repo.findById(code1);
+                optionalClasses1.ifPresent(classesList::add);
+            }
+            return ResponseEntity.ok(classesList);
+        }
+        else{
+            List<String> codes = new ArrayList<>();
+            codes.add(code);
+            org.backend.backend.model.Student_Class student_class1 = new org.backend.backend.model.Student_Class(uid,codes);
+            studentClass.save(student_class1);
+            Optional<Classes> classes = class_repo.findById(code);
+            return classes.map(value -> ResponseEntity.ok(Collections.singletonList(value))).orElseGet(() -> ResponseEntity.ok(null));
+        }
 
     }
 
