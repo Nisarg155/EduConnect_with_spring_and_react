@@ -17,6 +17,7 @@ export const loginSlice = createSlice(
             DeleteUser:(state,action) => {
                 state.User = action.payload
             }
+
         }
     }
 )

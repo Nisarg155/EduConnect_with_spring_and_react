@@ -4,7 +4,7 @@ import {useSelector} from "react-redux";
 import {Button, Card, Modal, Popover} from "flowbite-react";
 import {HiPlus} from 'react-icons/hi'
 import {MdModeEdit} from "react-icons/md";
-import {Grid} from "react-loader-spinner";
+import { Hourglass} from "react-loader-spinner";
 import {CreateClassFetch, DeleteClass} from "../../../fetch_components/fetchComponents.jsx";
 import CreateClass from "../../forms/createClass.jsx";
 import {FaInfoCircle, FaTrash} from "react-icons/fa";
@@ -129,16 +129,16 @@ const Teacher_Home = () => {
             {
                 sliding ?
                     <div style={{justifyContent: 'center', display: 'flex', flexWrap: 'wrap', marginTop: '18rem'}}>
-                        <Grid
+                        <Hourglass
                             visible={true}
-                            height="120"
-                            width="120"
-                            color="#05a7ed"
-                            ariaLabel="grid-loading"
-                            radius="12.5"
+                            height="80"
+                            width="80"
+                            ariaLabel="hourglass-loading"
                             wrapperStyle={{}}
-                            wrapperClass="grid-wrapper"
-                        /></div> :
+                            wrapperClass=""
+                            colors={['#306cce', '#72a1ed']}
+                        />
+                    </div> :
                     <div>
                         {
                             classes.length === 0 ?

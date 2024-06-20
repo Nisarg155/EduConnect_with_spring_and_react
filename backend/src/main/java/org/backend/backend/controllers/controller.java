@@ -168,19 +168,17 @@ public class controller {
 
     }
 
+    @GetMapping("verify_code/{code}")
+    public ResponseEntity<Boolean> verify_code(@PathVariable String code) {
+        return ResponseEntity.ok(class_repo.findById(code).isPresent());
+    }
+
     @PostMapping("JoinClass/{uid}/{code}")
     ResponseEntity<List<Classes>> join_class(@PathVariable String uid, @PathVariable String code) {
-
-        Optional<Classes> optionalClasses = class_repo.findById(code);
-        if (optionalClasses.isEmpty()) return ResponseEntity.ok(null);
 
         Optional<org.backend.backend.model.Student_Class> student_class = studentClass.findById(uid);
         if (student_class.isPresent()) {
             List<String> codes = student_class.get().getCodes();
-
-            if (codes.contains(code)) {
-                return ResponseEntity.ok(null);
-            }
             codes.add(code);
             student_class.get().setCodes(codes);
             studentClass.save(student_class.get());
@@ -202,6 +200,23 @@ public class controller {
         }
     }
 
+    @GetMapping("get_classes_student/{uid}")
+    public ResponseEntity<List<Classes>> get_classes_student(@PathVariable String uid) {
+        Optional<Student_Class> student_class = studentClass.findById(uid);
+
+        if(student_class.isPresent()) {
+            List<Classes> classesList = new ArrayList<>();
+            Optional<Classes> optionalClasses1;
+            List<String> codes = student_class.get().getCodes();
+            for (String code1 : codes) {
+                optionalClasses1 = class_repo.findById(code1);
+                optionalClasses1.ifPresent(classesList::add);
+            }
+            return ResponseEntity.ok(classesList);
+        }
+        return ResponseEntity.ok(null);
+    }
+
     @DeleteMapping("/RemoveClass/{uid}/{code}")
     ResponseEntity<List<Classes>> class_remove(@PathVariable String uid, @PathVariable String code) {
         Optional<Student_Class> student_class = studentClass.findById(uid);
@@ -221,6 +236,13 @@ public class controller {
             return ResponseEntity.ok(null);
         }
     }
+
+//    @PostMapping("/submission")
+//    ResponseEntity<List<submissions>> submissions(@RequestBody Map<String, Object> data) {
+//        List<String> codes = (List<String>) data.get("codes");
+//
+//    }
+
 
 
 //     @PostMapping("teacher/create")

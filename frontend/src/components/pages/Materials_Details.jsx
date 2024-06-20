@@ -1,13 +1,14 @@
 import {Button, Table} from "flowbite-react";
 import {useLocation, useNavigate} from "react-router-dom";
-import {getDownloadURL, getStorage , ref } from "firebase/storage";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 
-const Teacher_Material_Details = () => {
+const Materials_Details = () => {
+
     const {state} = useLocation();
-    const urls = state.urls;
-    const storage = getStorage();
     const regex = /\.(jpg|jpeg|png|gif|webp|html|css|txt|mp4|webm|pdf)$/i;
+    const storage = getStorage();
+    const urls = state.urls;
     const file_names = state.file_names;
     const navigation = useNavigate();
     const manage_download = (file_ref,file_name) => {
@@ -72,14 +73,32 @@ const Teacher_Material_Details = () => {
                                         {/*    className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">*/}
                                         {/*    Delete*/}
                                         {/*</a>*/}
-                                        <Button color={'info'}>
-                                            <a href={url.toString()} target={'_blank'}>
-                                                <b>
-                                                    View
-                                                </b>
 
-                                            </a>
-                                        </Button>
+                                        <div className={'flex flex-wrap  justify-center'}>
+                                            <Button color={'success'} className={'mr-4'}
+                                                    onClick={
+                                                        (event) => {
+                                                            event.preventDefault();
+                                                            const file_ref = ref(storage,`Materials/${state.code}/${file_names[i]}`)
+                                                            manage_download(file_ref,file_names[i])
+                                                        }
+                                                    } >
+                                                <b>
+                                                    Download
+                                                </b>
+                                            </Button>
+
+                                            {
+                                                regex.test(file_names[i]) ?
+                                                    <Button className={'ml-4'} color={'info'} href={url.toString()} target={'_blank'}>
+                                                        <b>
+                                                            View
+                                                        </b>
+                                                    </Button>
+                                                    : null
+                                            }
+                                        </div>
+
                                     </Table.Cell>
                                 </Table.Row>
                             ))
@@ -92,4 +111,4 @@ const Teacher_Material_Details = () => {
     )
 }
 
-export default Teacher_Material_Details;
+export default Materials_Details;

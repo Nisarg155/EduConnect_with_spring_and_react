@@ -1,20 +1,22 @@
 import {useRef, useState} from 'react';
 import {Button, Label, Modal, TextInput} from "flowbite-react";
 import {useDispatch, useSelector} from "react-redux";
-import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, updateProfile} from 'firebase/auth';
+import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword,  signOut,  updateProfile} from 'firebase/auth';
 import {doc, getDoc, getFirestore, setDoc} from 'firebase/firestore'
 import app from "../../firebase/config.jsx";
-import {AddUser} from "../../redux/reducer/loginslice.jsx";
+import {AddUser , DeleteUser} from "../../redux/reducer/loginslice.jsx";
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {FetchComponents} from "../../fetch_components/fetchComponents.jsx";
 import {HiMail} from "react-icons/hi";
-
+import {useNavigate} from "react-router-dom";
+import { browserSessionPersistence , setPersistence } from 'firebase/auth';
 
 const auth = getAuth(app);
+await setPersistence(auth, browserSessionPersistence);
 const firestore_database = getFirestore(app)
-
 const Navbar = () => {
+    const navigation = useNavigate()
     const [isOpen, setIsOpen] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [signupModal, setSignupModal] = useState(false)
@@ -23,7 +25,6 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const login = useRef(null);
     const signup = useRef(null);
-
     const [email, setEmail] = useState('');
 
     function onCloseModal() {
@@ -312,10 +313,20 @@ const Navbar = () => {
                                 (
                                     <div className={`lg:flex lg:items-center lg:mx-8 ${isOpen ? 'block' : 'hidden'}`}>
                                         <div className="flex flex-col lg:flex-row lg:items-center">
-                                            <a href="#"
+
+                                            <a href={'/'}
                                                className="px-3 py-2 mx-3 mt-2 text-gray-100 hover:bg-gray-600 rounded-md lg:mt-0">Home</a>
-                                            <a href="#"
-                                               className="px-3 py-2 mx-3 mt-2 text-gray-100 hover:bg-gray-600 rounded-md lg:mt-0">Classes</a>
+                                            <a onClick={
+                                                async () => {
+                                                    await signOut(auth).then(
+                                                        async () => {
+                                                            await navigation('/')
+                                                            dispatch(DeleteUser(null))
+                                                        }
+                                                    )
+                                                }
+                                            }
+                                               className="px-3 py-2 mx-3 mt-2 text-gray-100 hover:bg-gray-600 rounded-md lg:mt-0">Sign-out</a>
                                             <a href="#"
                                                className="px-3 py-2 mx-3 mt-2 text-gray-100 hover:bg-gray-600 rounded-md lg:mt-0">Materials</a>
                                             <a href="#"

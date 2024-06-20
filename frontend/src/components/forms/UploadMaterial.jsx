@@ -24,7 +24,7 @@ const UploadMaterial = (props) => {
         let urls = [];
         let file_names = [];
          for (const file of data.files) {
-             const storageRef = ref(storage, `Materials/${data.uid}/${data.code}/${file.name}`)
+             const storageRef = ref(storage, `Materials/${data.code}/${file.name}`)
              await uploadBytes(storageRef, file).then(async () => {
                  progress = progress + 1;
                  setProgressbar(progress / length * 100);

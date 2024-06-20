@@ -1,14 +1,15 @@
 import {Button, Card, Modal, Table} from "flowbite-react";
 import {HiPlus} from "react-icons/hi";
 import {useEffect, useState} from "react";
-import UploadMaterial from "../../forms/UploadMaterial.jsx";
+import UploadMaterial from "../forms/UploadMaterial.jsx";
 import {useNavigate, useParams} from "react-router-dom";
 import {FaTrash} from "react-icons/fa";
 import {CgDetailsMore} from "react-icons/cg";
 import {deleteObject, getStorage, ref} from "firebase/storage";
 import {getAuth} from "firebase/auth";
+import {useSelector} from "react-redux";
 
-export function Teacher_Materials() {
+export function Materials() {
     const [materialModal, setMaterialModal] = useState(false)
     const onCloseModal = () => {
         setMaterialModal(false)
@@ -19,20 +20,29 @@ export function Teacher_Materials() {
     const [materials, setMaterials] = useState([])
     const navigate = useNavigate();
     const storage = getStorage();
-    const [deletemodal, setDeletemodal] = useState(false)
+    const user = useSelector(state => state.User)
+
+    const handle_navigation = (data) => {
+
+        if (user.role === 'Teacher' || user.role === 'Student') {
+            navigate('/MaterialsDetails', {
+                state: data
+            })
+        }
+    }
     const deleteMaterial = (id, file_names) => {
         const auth = getAuth();
         const uid = auth.currentUser.uid;
 
         file_names.map((name) => {
-            const Ref = ref(storage, `Materials/${uid}/${class_id.code}/${name}`)
+            const Ref = ref(storage, `Materials/${class_id.code}/${name}`)
             deleteObject(Ref).then(() => {
 
                 }
             )
         })
-        const responses = fetch(`http://localhost:8080/api/materials/${class_id.code}/${id}`,{
-            method:'DELETE'
+        const responses = fetch(`http://localhost:8080/api/materials/${class_id.code}/${id}`, {
+            method: 'DELETE'
         })
         responses.then(
             (responses) => {
@@ -45,7 +55,7 @@ export function Teacher_Materials() {
         )
     }
     useEffect(() => {
-        const response = fetch(`http://localhost:8080/api/materials/${class_id.code}`,{})
+        const response = fetch(`http://localhost:8080/api/materials/${class_id.code}`, {})
         response.then(
             response => {
                 response.json().then(
@@ -122,15 +132,18 @@ export function Teacher_Materials() {
             {/*    <Modal.Header/>*/}
 
             {/*</Modal>*/}
-            <div className="flex flex-wrap gap-2 mt-6 justify-end">
-                <Button gradientMonochrome="info" className={'lg:mr-40 mr-8 '} onClick={
-                    () => {
-                        setMaterialModal(true)
-                    }
-                }>
-                    <HiPlus className="mr-2 h-5 w-5"/> <b style={{fontSize: 'medium'}}>Add Material</b>
-                </Button>
-            </div>
+            {
+                user.role === 'Teacher' ?
+                    <div className="flex flex-wrap gap-2 mt-6 justify-end">
+                        <Button gradientMonochrome="info" className={'lg:mr-40 mr-8 '} onClick={
+                            () => {
+                                setMaterialModal(true)
+                            }
+                        }>
+                            <HiPlus className="mr-2 h-5 w-5"/> <b style={{fontSize: 'medium'}}>Add Material</b>
+                        </Button>
+                    </div> : null
+            }
             <div style={{
                 display: "flex",
                 flexWrap: "wrap",
@@ -167,26 +180,30 @@ export function Teacher_Materials() {
                                     justifyContent: 'space-between'
                                 }}
                                 >
+                                    {
+                                        user.role === 'Teacher' ?
+                                            <Button color="failure" onClick={
+                                                () => {
+                                                    deleteMaterial(material.code, material.file_names)
+                                                }
+                                            }>
+                                                <b style={{fontSize: 'medium'}}>
+                                                    Delete
+                                                </b>
+                                                <FaTrash className="ml-3 h-5 w-5"/>
+                                            </Button> :
+                                            null
+                                    }
 
-                                    <Button color="failure" onClick={
-                                        () => {
-                                            deleteMaterial(material.code, material.file_names)
-                                        }
-                                    }>
-                                        <b style={{fontSize: 'medium'}}>
-                                            Delete
-                                        </b>
-                                        <FaTrash className="ml-3 h-5 w-5"/>
-                                    </Button>
                                     <Button onClick={
                                         () => {
-                                            navigate('/MaterialsDetails', {
-                                                state: {
-                                                    code: material.class_id,
-                                                    urls: material.urls,
-                                                    file_names: material.file_names
-                                                }
-                                            })
+                                            const data = {
+
+                                                code: material.class_id,
+                                                urls: material.urls,
+                                                file_names: material.file_names
+                                            }
+                                            handle_navigation(data)
                                         }
                                     }>
                                         <CgDetailsMore className="mr-3 h-5 w-5"/>
