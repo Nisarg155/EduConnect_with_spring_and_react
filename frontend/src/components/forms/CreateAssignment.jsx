@@ -23,7 +23,7 @@ const CreateAssignment = () => {
                 <div className="mb-2 block">
                     <Label htmlFor="Submission" className={'font-medium'} value="Submission Date"/>
                 </div>
-                <Datepicker  id={'Submission'} name={'Submission'} minDate={new Date()} autoHide={true} title={'Submission Date'}/>
+                <Datepicker  id={'Submission'} name={'Submission'} minDate={new Date()} autoHide={true}  title={'Submission Date'}/>
             </div>
             <div>
                 <div className="mb-2 block">

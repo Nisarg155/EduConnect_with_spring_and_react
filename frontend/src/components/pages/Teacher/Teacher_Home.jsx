@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {toast, ToastContainer} from "react-toastify";
 import {useSelector} from "react-redux";
-import {Button, Card, Modal, Popover} from "flowbite-react";
+import {Button, Card, Modal} from "flowbite-react";
 import {HiPlus} from 'react-icons/hi'
 import {MdModeEdit} from "react-icons/md";
 import { Hourglass} from "react-loader-spinner";
@@ -189,13 +189,19 @@ const Teacher_Home = () => {
                                                             </p>
                                                         </div>
                                                     </Link>
-
+                                                    <span className={'font-medium'}>
+                                                        <b>
+                                                        Code :- {card.class_id}
+                                                        </b>
+                                                    </span>
                                                     <div style={{
                                                         marginBottom: '-100px',
                                                         display: 'flex',
                                                         flexWrap: 'wrap',
-                                                        justifyContent: 'space-between'
+                                                        justifyContent: 'end'
                                                     }}
+
+                                                         className={'gap-2'}
                                                     >
                                                         <Button onClick={
                                                             () => {
@@ -212,34 +218,14 @@ const Teacher_Home = () => {
                                                                     }
                                                                 )
                                                             }
+
+
                                                         }>
+                                                            <MdModeEdit className="mr-2 h-5 w-5"/>
                                                             <b style={{fontSize: 'medium'}}>
                                                                 Edit
                                                             </b>
-                                                            <MdModeEdit className="ml-2 h-5 w-5"/>
                                                         </Button>
-                                                        <Popover content={
-                                                            <div
-                                                                className="w-auto text-sm text-gray-500 dark:text-gray-400">
-                                                                <div
-                                                                    className="border-b border-gray-200 bg-gray-100 px-3 py-2 dark:border-gray-600 dark:bg-gray-700">
-                                                                    <h3 className="font-semibold text-gray-900 dark:text-white">
-                                                                        <b style={{fontSize: 'medium'}}>
-                                                                            {card.class_id}
-                                                                        </b>
-                                                                    </h3>
-                                                                </div>
-                                                            </div>
-                                                        } placement={"bottom"}>
-
-
-                                                            <Button color={'success'}>
-                                                                <b style={{fontSize: 'medium'}}>
-                                                                    Code
-                                                                </b>
-                                                                <FaInfoCircle className="ml-2 h-5 w-5"/>
-                                                            </Button>
-                                                        </Popover>
                                                         <Button color="failure" onClick={
                                                             () => {
                                                                 deleteClass({
@@ -248,10 +234,10 @@ const Teacher_Home = () => {
                                                                 })
                                                             }
                                                         }>
+                                                            <FaTrash className="mr-2 h-5 w-5"/>
                                                             <b style={{fontSize: 'medium'}}>
                                                                 Delete
                                                             </b>
-                                                            <FaTrash className="ml-3 h-5 w-5"/>
                                                         </Button>
                                                     </div>
                                                 </Card>

@@ -12,7 +12,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class controller {
 
 
@@ -33,29 +33,16 @@ public class controller {
         this.studentClass = studentClass;
     }
 
-    public String generateRandomCode() {
-        int leftLimit = 48; // '0'
-        int rightLimit = 122; // 'z'
-
-        // Exclude characters that are not alphanumeric
-        int excludedCharCount = rightLimit - 57 + 1; // Range of non-alphanumeric characters (from ':' to '[')
-        rightLimit -= excludedCharCount;
-
-        int length = 8;
-        Random random = new Random();
-        StringBuilder builder = new StringBuilder(length);
-
-        while (builder.length() < length) {
-            int randomLimitedInt = leftLimit + (int) (random.nextDouble() * (rightLimit - leftLimit + 1));
-            char c = (char) randomLimitedInt;
-
-            // Ensure character is alphanumeric before appending
-            if (Character.isLetterOrDigit(c)) {
-                builder.append(c);
-            }
+    public String generateRandomCode(int length) {
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz";
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() < length) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
         }
-
-        return builder.toString();
+        String saltStr = salt.toString();
+        return saltStr;
     }
 
 
@@ -81,9 +68,9 @@ public class controller {
         // finds the teacher based on uid
         classes.setTeacher_id(uid);
         classes.setTeacher_name(name);
-        String code = generateRandomCode();
+        String code = generateRandomCode(8);
         while (class_repo.findById(code).isPresent()) {
-            code = generateRandomCode();
+            code = generateRandomCode(8);
         }
         classes.setClass_id(code);
         class_repo.save(classes);
@@ -117,9 +104,9 @@ public class controller {
 
     @PostMapping("/material/upload")
     public ResponseEntity<List<Materials>> upload_material(@RequestBody Map<String, Object> data) {
-        String code = generateRandomCode();
+        String code = generateRandomCode(16);
         while (materials_repo.findByCode(code) != null) {
-            code = generateRandomCode();
+            code = generateRandomCode(16);
         }
         String class_code = data.get("code").toString();
         String title = data.get("title").toString();
@@ -149,16 +136,16 @@ public class controller {
     @PostMapping("Assignment/{class__code}")
     public ResponseEntity<List<org.backend.backend.model.Assignment>> add_assignment(@PathVariable String class__code, @RequestBody Map<String, Object> data) {
 
-        String code = generateRandomCode();
+        String code = generateRandomCode(16);
 
         while (assignment.findByUniqueCode(code) != null) {
-            code = generateRandomCode();
+            code = generateRandomCode(16);
         }
         String title = data.get("title").toString();
         String description = data.get("description").toString();
 //        Date lastdate = (Date) data.get("sub_date");
-        Date lastdate = new Date();
-        System.out.println(data.get("sub_date").toString());
+        String lastdate =  data.get("sub_date").toString();
+        System.out.println(lastdate);
         boolean latesub = (boolean) data.get("late_sub");
 
         org.backend.backend.model.Assignment assignment1 = new org.backend.backend.model.Assignment(title, description, lastdate, latesub, code, class__code);
@@ -166,6 +153,11 @@ public class controller {
 
         return ResponseEntity.ok(assignment.findByClassCode(class__code));
 
+    }
+
+    @GetMapping("get_assignments/{code}")
+    public ResponseEntity<List<org.backend.backend.model.Assignment>> get_assignments(@PathVariable String code) {
+        return ResponseEntity.ok(assignment.findByClassCode(code));
     }
 
     @GetMapping("verify_code/{code}")

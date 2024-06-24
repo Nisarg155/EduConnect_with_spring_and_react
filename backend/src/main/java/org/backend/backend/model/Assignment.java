@@ -3,8 +3,6 @@ package org.backend.backend.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
-
 @Document
 public class Assignment {
     @Id
@@ -14,7 +12,7 @@ public class Assignment {
     
     private String description;
     
-    private Date lastdate;
+    private String lastdate;
     
     private boolean latesubmisssion;
     
@@ -22,7 +20,7 @@ public class Assignment {
     
     private String class_code;
 
-    public Assignment( String title, String description, Date lastdate, boolean latesubmisssion, String uniqueCode, String code) {
+    public Assignment( String title, String description, String lastdate, boolean latesubmisssion, String uniqueCode, String code) {
         this.title = title;
         this.description = description;
         this.lastdate = lastdate;
@@ -58,11 +56,11 @@ public class Assignment {
         this.description = description;
     }
 
-    public Date getLastdate() {
+    public String getLastdate() {
         return lastdate;
     }
 
-    public void setLastdate(Date lastdate) {
+    public void setLastdate(String lastdate) {
         this.lastdate = lastdate;
     }
 

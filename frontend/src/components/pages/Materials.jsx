@@ -4,10 +4,10 @@ import {useEffect, useState} from "react";
 import UploadMaterial from "../forms/UploadMaterial.jsx";
 import {useNavigate, useParams} from "react-router-dom";
 import {FaTrash} from "react-icons/fa";
-import {CgDetailsMore} from "react-icons/cg";
 import {deleteObject, getStorage, ref} from "firebase/storage";
 import {getAuth} from "firebase/auth";
 import {useSelector} from "react-redux";
+import {TbListDetails} from "react-icons/tb";
 
 export function Materials() {
     const [materialModal, setMaterialModal] = useState(false)
@@ -174,27 +174,10 @@ export function Materials() {
                                     </p>
                                 </div>
                                 <div style={{
-                                    marginBottom: '-100px',
-                                    display: 'flex',
-                                    flexWrap: 'wrap',
-                                    justifyContent: 'space-between'
+                                    marginBottom: '-100px'
                                 }}
+                                     className={'flex flex-wrap gap-2 justify-end'}
                                 >
-                                    {
-                                        user.role === 'Teacher' ?
-                                            <Button color="failure" onClick={
-                                                () => {
-                                                    deleteMaterial(material.code, material.file_names)
-                                                }
-                                            }>
-                                                <b style={{fontSize: 'medium'}}>
-                                                    Delete
-                                                </b>
-                                                <FaTrash className="ml-3 h-5 w-5"/>
-                                            </Button> :
-                                            null
-                                    }
-
                                     <Button onClick={
                                         () => {
                                             const data = {
@@ -206,12 +189,29 @@ export function Materials() {
                                             handle_navigation(data)
                                         }
                                     }>
-                                        <CgDetailsMore className="mr-3 h-5 w-5"/>
+                                        <TbListDetails className="mr-3 h-5 w-5"/>
                                         <b style={{fontSize: 'medium'}}>
                                             Details
                                         </b>
                                     </Button>
+
+                                    {
+                                        user.role === 'Teacher' ?
+                                            <Button color="failure" onClick={
+                                                () => {
+                                                    deleteMaterial(material.code, material.file_names)
+                                                }
+                                            }>
+                                                <FaTrash className="mr-3 h-5 w-5"/>
+                                                <b style={{fontSize: 'medium'}}>
+                                                    Delete
+                                                </b>
+                                            </Button> :
+                                            null
+                                    }
                                 </div>
+
+
                             </Card>
                         )
                     )
