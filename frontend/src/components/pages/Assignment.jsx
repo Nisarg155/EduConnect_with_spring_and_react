@@ -1,15 +1,16 @@
 import {useParams} from "react-router-dom";
-import {Accordion, Badge, Button, FileInput, Label, Modal, Progress, Table} from "flowbite-react";
-import {HiPlus} from "react-icons/hi";
+import {Accordion, Badge, Button, FileInput, Kbd, Label, Modal, Progress, Table} from "flowbite-react";
+import {HiCheck, HiPlus} from "react-icons/hi";
 import {useEffect, useState} from "react";
 import CreateAssignment from "../forms/CreateAssignment.jsx";
 import {CreateAssignmentFetch} from "../../fetch_components/fetchComponents.jsx";
 import moment from 'moment';
 import {TbListDetails} from "react-icons/tb";
-import {FaTrash} from "react-icons/fa";
+import {FaExclamation, FaTrash} from "react-icons/fa";
 import {useSelector} from "react-redux";
 import {MdOutlineFileUpload} from "react-icons/md";
 import {getDownloadURL, getStorage, ref, uploadBytes} from "firebase/storage";
+import {BsFillCalendarDateFill} from "react-icons/bs";
 
 
 const Assignment = () => {
@@ -23,8 +24,31 @@ const Assignment = () => {
     const [issubmited, setIssubmited] = useState(false)
     const [progressbar, setProgressbar] = useState(0.0)
     const storage = getStorage();
+    const [submissions, setSubmissions] = useState(new Map())
+
 
     useEffect(() => {
+
+        if (user.role === 'Student') {
+
+            const res = fetch(`http://localhost:8080/api/submissions/${user.uid}/${class_id.code}`, {
+                method: 'GET'
+            })
+            res.then(
+                (response) => {
+                    response.json().then(
+                        (value) => {
+
+                            value.forEach((submission) => {
+                                setSubmissions(prevState => new Map(prevState.set(submission.assignment_id, submission)))
+                            })
+                        }
+                    )
+                }
+            )
+
+        }
+
         let res = fetch(`http://localhost:8080/api/get_assignments/${class_id.code}`, {
             method: 'GET',
         })
@@ -47,8 +71,16 @@ const Assignment = () => {
         setUploadmodal(!uploadmodal)
         setCurrent_assignment(null)
     }
-
-
+    const get_submissions = (data) => {
+        return fetch(`http://localhost:8080/api/submission/${user.uid}/${class_id.code}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+    }
     const manage_upload = async () => {
         setIssubmited(true)
         let length = files.length
@@ -56,8 +88,7 @@ const Assignment = () => {
         const urls = []
         const file_names = []
 
-        for(const file of files)
-        {
+        for (const file of files) {
             const storageRef = ref(storage, `Assignments/${class_id.code}/${current_assignment}/${file.name}`)
             await uploadBytes(storageRef, file).then(async () => {
                 progress = progress + 1;
@@ -69,8 +100,31 @@ const Assignment = () => {
                     }
                 )
             })
-
         }
+
+        const data = {
+            class_code: class_id.code,
+            assignment_id: current_assignment,
+            file_names: file_names,
+            urls: urls,
+            sub_date: new Date(),
+            student_id: user.uid,
+            student_name: user.username
+        }
+
+        const res = get_submissions(data)
+        res.then((response) => {
+            response.json().then(
+                (value) => {
+                    value.forEach((submission) => {
+                        setSubmissions(prevState => new Map(prevState.set(submission.assignment_id, submission)))
+                    })
+                }
+            )
+        })
+
+        console.log(submissions)
+
     }
     const CreateAss = async (data) => {
 
@@ -252,24 +306,48 @@ const Assignment = () => {
                             <Accordion key={assignment.unique_code} className={'shadow mb-4'}>
                                 <Accordion.Panel>
                                     <Accordion.Title className={'font-medium'}>
-                                        <div className={'flex flex-wrap gap-3'}>
+                                        <div className={'flex flex-wrap gap-4'}>
                                             <b>
                                                 {assignment.title}
                                             </b>
+                                            {
+                                                user.role === 'Student' ? (submissions.has(assignment.unique_code) ?
+                                                    <Badge icon={HiCheck} className={'shadow font-medium'}
 
-                                            <Badge color="info" size="sm"  className={'shadow'}>
-                                                Submitted
-                                            </Badge>
+                                                           color={'green'}>
+                                                        <b>Submitted</b>
+                                                    </Badge> :
+                                                    <Badge
+                                                        icon={FaExclamation}
+                                                        className={'shadow font-medium'}
+                                                        color={'warning'}>
+                                                        <b>Not Submitted</b>
+                                                    </Badge>) : null
+                                            }
+                                            {
+                                                user.role === 'Student' ?
+                                                    (submissions.has(assignment.unique_code) && (submissions.get(assignment.unique_code).sub_date) > assignment.lastdate ?
+                                                        <Badge className={'shadow'} icon={FaExclamation}
+                                                               color={'failure'}>
+                                                            <b>Late</b>
+                                                        </Badge> : null) : null
+                                            }
                                         </div>
-
                                     </Accordion.Title>
                                     <Accordion.Content>
                                         {
                                             assignment.description
                                             // ((new Date()).getTime() >= new Date(assignment.lastdate).getTime()).toString()
                                         }
+                                        {
+                                            <div className={'flex-wrap flex gap-2 mt-4 justify-end'}>
+                                                <BsFillCalendarDateFill className={'h-7 w-7'}/>
+                                                <Kbd> {(new Date(assignment.lastdate)).toDateString()}</Kbd>
+                                            </div>
+                                        }
                                     </Accordion.Content>
                                     <Accordion.Content>
+
                                         {
                                             user.role === 'Teacher' ?
                                                 <div className={'flex flex-wrap justify-end gap-2'}>
@@ -288,41 +366,46 @@ const Assignment = () => {
                                                 </div> :
                                                 <div className={'flex-wrap flex justify-end'}>
                                                     {
-                                                        !assignment.latesubmisssion ? <Button onClick={
-                                                            () => {
-                                                                setCurrent_assignment(assignment.unique_code)
-                                                                setUploadmodal(true)
-                                                            }
-
-                                                        }
-
-                                                        >
-                                                            <MdOutlineFileUpload className="mr-2 h-5 w-5"/>
-                                                            <b>
-                                                                Upload
-                                                            </b>
-                                                        </Button> : (new Date(assignment.lastdate).getTime() >= (new Date()).getTime()) ?
-                                                            <Button onClick={
+                                                        submissions.has(assignment.unique_code) ?
+                                                            <Button color={'info'} disabled={true}>
+                                                                <b> Uploaded</b>
+                                                            </Button> :
+                                                            !assignment.latesubmisssion ? <Button onClick={
                                                                 () => {
                                                                     setCurrent_assignment(assignment.unique_code)
                                                                     setUploadmodal(true)
                                                                 }
 
                                                             }
+
                                                             >
                                                                 <MdOutlineFileUpload className="mr-2 h-5 w-5"/>
                                                                 <b>
                                                                     Upload
                                                                 </b>
-                                                            </Button> : <Button disabled={true}>
-                                                                <MdOutlineFileUpload className="mr-2 h-5 w-5"/>
-                                                                <b>
-                                                                    Upload
-                                                                </b>
-                                                            </Button>
+                                                            </Button> : (new Date(assignment.lastdate).getTime() >= (new Date()).getTime()) ?
+                                                                <Button onClick={
+                                                                    () => {
+                                                                        setCurrent_assignment(assignment.unique_code)
+                                                                        setUploadmodal(true)
+                                                                    }
+
+                                                                }
+                                                                >
+                                                                    <MdOutlineFileUpload className="mr-2 h-5 w-5"/>
+                                                                    <b>
+                                                                        Upload
+                                                                    </b>
+                                                                </Button> : <Button disabled={true}>
+                                                                    <MdOutlineFileUpload className="mr-2 h-5 w-5"/>
+                                                                    <b>
+                                                                        Upload
+                                                                    </b>
+                                                                </Button>
                                                     }
                                                 </div>
                                         }
+
                                     </Accordion.Content>
                                 </Accordion.Panel>
                             </Accordion>
