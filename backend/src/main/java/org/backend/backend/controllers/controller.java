@@ -22,15 +22,17 @@ public class controller {
     private final Materials_repo materials_repo;
     private final Assignment assignment;
     private final StudentClass studentClass;
+    private final Submission submissions_repo;
 
     @Autowired
-    controller(Student_repo studentRepo, Teacher_repo teacher_repo, Class_repo classRepo, Materials_repo materialsRepo, Assignment assignment, StudentClass studentClass) {
+    controller(Student_repo studentRepo, Teacher_repo teacher_repo, Class_repo classRepo, Materials_repo materialsRepo, Assignment assignment, StudentClass studentClass, Submission submission, Submission submissionsRepo) {
         this.studentRepo = studentRepo;
         this.teacher_repo = teacher_repo;
         class_repo = classRepo;
         materials_repo = materialsRepo;
         this.assignment = assignment;
         this.studentClass = studentClass;
+        submissions_repo = submissionsRepo;
     }
 
     public String generateRandomCode(int length) {
@@ -229,6 +231,18 @@ public class controller {
         }
     }
 
+    @PostMapping("submission/{uid}/{classId}")
+    ResponseEntity<List<submissions>> submission(@RequestBody submissions submission, @PathVariable String uid, @PathVariable String classId)
+    {
+        submissions_repo.save(submission);
+        return ResponseEntity.ok(submissions_repo.findByClassCode(classId,uid));
+    }
+
+    @GetMapping("submissions/{uid}/{classId}")
+    ResponseEntity<List<submissions>> get_submissions(@PathVariable String uid, @PathVariable String classId)
+    {
+        return ResponseEntity.ok(submissions_repo.findByClassCode(classId,uid));
+    }
 //    @PostMapping("/submission")
 //    ResponseEntity<List<submissions>> submissions(@RequestBody Map<String, Object> data) {
 //        List<String> codes = (List<String>) data.get("codes");

@@ -14,18 +14,22 @@ public class submissions {
     private String assignment_id;
     private List<String> file_names;
     private List<String> urls;
-    private Date sub_date;
+    private String sub_date;
+    private String student_id;
+    private String student_name;
 
-    public submissions(String id, String class_code, String assignment_id, List<String> file_names, List<String> urls, Date sub_date) {
+    public submissions() {
+    }
+
+    public submissions(String id, String class_code, String assignment_id, List<String> file_names, List<String> urls, String sub_date, String student_id, String student_name) {
         this.id = id;
         this.class_code = class_code;
         this.assignment_id = assignment_id;
         this.file_names = file_names;
         this.urls = urls;
         this.sub_date = sub_date;
-    }
-
-    public submissions() {
+        this.student_id = student_id;
+        this.student_name = student_name;
     }
 
     public String getId() {
@@ -68,12 +72,28 @@ public class submissions {
         this.urls = urls;
     }
 
-    public Date getSub_date() {
+    public String getSub_date() {
         return sub_date;
     }
 
-    public void setSub_date(Date sub_date) {
+    public void setSub_date(String sub_date) {
         this.sub_date = sub_date;
+    }
+
+    public String getStudent_id() {
+        return student_id;
+    }
+
+    public void setStudent_id(String student_id) {
+        this.student_id = student_id;
+    }
+
+    public String getStudent_name() {
+        return student_name;
+    }
+
+    public void setStudent_name(String student_name) {
+        this.student_name = student_name;
     }
 
     @Override
@@ -84,7 +104,9 @@ public class submissions {
                 ", assignment_id='" + assignment_id + '\'' +
                 ", file_names=" + file_names +
                 ", urls=" + urls +
-                ", sub_date=" + sub_date +
+                ", sub_date='" + sub_date + '\'' +
+                ", student_id='" + student_id + '\'' +
+                ", student_name='" + student_name + '\'' +
                 '}';
     }
 }
