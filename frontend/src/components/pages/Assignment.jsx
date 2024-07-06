@@ -150,15 +150,18 @@ const Assignment = () => {
 
     return (
         <div>
-            <div className="flex flex-wrap gap-2 mt-6 justify-end">
-                <Button gradientMonochrome="info" className={'lg:mr-40 mr-8 '} onClick={
-                    () => {
-                        setCreateModal(true)
-                    }
-                }>
-                    <HiPlus className="mr-2 h-5 w-5"/> <b style={{fontSize: 'medium'}}>Add Assignment</b>
-                </Button>
-            </div>
+            {
+                user.role === 'Student' ? <div className="flex flex-wrap gap-2 mt-6 justify-end">
+                    <Button gradientMonochrome="info" className={'lg:mr-40 mr-8 '} onClick={
+                        () => {
+                            setCreateModal(true)
+                        }
+                    }>
+                        <HiPlus className="mr-2 h-5 w-5"/> <b style={{fontSize: 'medium'}}>Add Assignment</b>
+                    </Button>
+                </div> : null
+            }
+
 
             <Modal show={uploadmodal} size={'2xl'} onClose={toggleUpdateModal} popup>
                 <Modal.Header> Upload Assignments</Modal.Header>

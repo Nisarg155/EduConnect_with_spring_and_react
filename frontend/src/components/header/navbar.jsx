@@ -326,11 +326,11 @@ const Navbar = () => {
                                                     )
                                                 }
                                             }
-                                               className="px-3 py-2 mx-3 mt-2 text-gray-100 hover:bg-gray-600 rounded-md lg:mt-0">Sign-out</a>
+                                               className="px-3 py-2 mx-3 mt-2 text-gray-100 hover:bg-gray-600 hover:cursor-pointer rounded-md lg:mt-0">Sign-out</a>
                                             <a href="#"
-                                               className="px-3 py-2 mx-3 mt-2 text-gray-100 hover:bg-gray-600 rounded-md lg:mt-0">Materials</a>
+                                               className="px-3 py-2 mx-3 mt-2 text-gray-100 hover:bg-gray-600 hover:cursor-pointer rounded-md lg:mt-0">Materials</a>
                                             <a href="#"
-                                               className="px-3 py-2 mx-3 mt-2 text-gray-100 hover:bg-gray-600 rounded-md lg:mt-0">About</a>
+                                               className="px-3 py-2 mx-3 mt-2 text-gray-100 hover:bg-gray-600 hover:cursor-pointer rounded-md lg:mt-0">About</a>
                                         </div>
                                         <div className="flex items-center mt-4 lg:mt-0">
                                             <button
