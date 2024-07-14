@@ -1,6 +1,6 @@
 import {Button, Table} from "flowbite-react";
 import {useLocation, useNavigate} from "react-router-dom";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import {getStorage, ref, getDownloadURL} from "firebase/storage";
 import {saveAs} from 'file-saver'
 
 
@@ -12,7 +12,7 @@ const Materials_Details = () => {
     const urls = state.urls;
     const file_names = state.file_names;
     const navigation = useNavigate();
-    const manage_download = (file_ref,file_name) => {
+    const manage_download = (file_ref, file_name) => {
 
         getDownloadURL(file_ref)
             .then((url) => {
@@ -22,7 +22,7 @@ const Materials_Details = () => {
                 xhr.responseType = 'blob';
                 xhr.onload = (event) => {
                     const blob = xhr.response;
-                    saveAs(blob,file_name);
+                    saveAs(blob, file_name);
                 };
                 xhr.open('GET', url);
                 xhr.send();
@@ -35,8 +35,8 @@ const Materials_Details = () => {
     }
     return (
         <div>
-            <div className={ 'mt-8'}  >
-                <a className={'ml-20 hover:cursor-pointer '} style={{ fontSize:"medium" , color:'blue' }}  onClick={
+            <div className={'mt-8'}>
+                <a className={'ml-20 hover:cursor-pointer '} style={{fontSize: "medium", color: 'blue'}} onClick={
                     () => {
                         navigation(`/ClassDetails/${state.code}`)
                     }
@@ -80,10 +80,10 @@ const Materials_Details = () => {
                                                     onClick={
                                                         (event) => {
                                                             event.preventDefault();
-                                                            const file_ref = ref(storage,`Materials/${state.code}/${file_names[i]}`)
-                                                            manage_download(file_ref,file_names[i])
+                                                            const file_ref = ref(storage, `Materials/${state.code}/${file_names[i]}`)
+                                                            manage_download(file_ref, file_names[i])
                                                         }
-                                                    } >
+                                                    }>
                                                 <b>
                                                     Download
                                                 </b>
@@ -91,7 +91,8 @@ const Materials_Details = () => {
 
                                             {
                                                 regex.test(file_names[i]) ?
-                                                    <Button className={'ml-4 border-2 shadow'} color={'cyan'} href={url.toString()} target={'_blank'}>
+                                                    <Button className={'ml-4 border-2 shadow'} color={'cyan'}
+                                                            href={url.toString()} target={'_blank'}>
                                                         <b>
                                                             View
                                                         </b>

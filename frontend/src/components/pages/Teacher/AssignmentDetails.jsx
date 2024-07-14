@@ -1,16 +1,50 @@
 import {useLocation, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {Badge, Button, Table} from "flowbite-react";
-import {ref} from "firebase/storage";
+import {Badge, Button, Modal, Table} from "flowbite-react";
+import {getDownloadURL, getStorage, ref} from "firebase/storage";
 import {HiCheck} from "react-icons/hi";
 import {FaExclamation} from "react-icons/fa";
 import {Hourglass} from "react-loader-spinner";
+import {saveAs} from 'file-saver'
 
 const AssignmentDetails = () => {
     const navigation = useNavigate()
     const [submissions, setSubmissions] = useState([])
     const [isloading, setIsloading] = useState(true)
     const {state} = useLocation();
+    const [submissionModal, setSubmissionModal] = useState(false)
+    const [urls, setUrls] = useState([])
+    const [fileNames, setFileNames] = useState([])
+    const regex = /\.(jpg|jpeg|png|gif|webp|html|css|txt|mp4|webm|pdf)$/i;
+    const storage = getStorage();
+
+    const onCloseModal = () => {
+        setSubmissionModal(false)
+        setFileNames([])
+        setUrls([])
+    }
+
+    const manage_submission_download = (file_ref, file_name) => {
+
+        getDownloadURL(file_ref)
+            .then((url) => {
+
+                // This can be downloaded directly:
+                const xhr = new XMLHttpRequest();
+                xhr.responseType = 'blob';
+                xhr.onload = (event) => {
+                    const blob = xhr.response;
+                    saveAs(blob, file_name);
+                };
+                xhr.open('GET', url);
+                xhr.send();
+
+
+            })
+            .catch((error) => {
+
+            });
+    }
 
     useEffect(() => {
         const res2 = fetch(`http://localhost:8080/api/get_students/${state.code}`, {
@@ -57,7 +91,70 @@ const AssignmentDetails = () => {
 
     return (
 
+
         <div>
+            <Modal show={submissionModal} size="4xl" position={'center'} className={'flex flex-row  shadow'}
+                   onClose={onCloseModal} popup>
+                <Modal.Header>
+                    Submission
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="overflow-x-auto  drop-shadow-2xl justify-center" >
+                        <Table striped  className={'shadow border-gray-500    rounded-lg '}>
+                            <Table.Head className={'justify-between'}>
+                                <Table.HeadCell style={{fontSize: 'medium'}}>File Names Name </Table.HeadCell>
+                                <Table.HeadCell></Table.HeadCell>
+                            </Table.Head>
+                            <Table.Body className={'divide-y'}>
+                                {
+
+                                    fileNames.map((file, i) => (
+                                        <Table.Row key={i}>
+                                            <Table.Cell className={'font-medium'}>
+                                                <b>
+                                                    {file}
+                                                </b>
+                                            </Table.Cell>
+                                            <Table.Cell>
+                                                <div className={'flex flex-wrap  justify-center'}>
+                                                    <Button color={'green'} className={'mr-4 border-2 shadow'}
+                                                            onClick={
+                                                                (event) => {
+                                                                    event.preventDefault();
+                                                                    const file_ref = ref(storage, `Assignments/${state.code}/${state.assignment_id}/${file}`)
+                                                                    manage_submission_download(file_ref, file)
+                                                                }
+                                                            }>
+                                                        <b>
+                                                            Download
+                                                        </b>
+                                                    </Button>
+
+                                                    {
+
+                                                        regex.test(file) ?
+                                                            <Button className={'ml-4 border-2 shadow'} color={'cyan'}
+
+                                                                    href={urls.at(i).toString()}
+                                                                    target={'_blank'}>
+                                                                <b>
+                                                                    View
+                                                                </b>
+                                                            </Button>
+                                                            : null
+                                                    }
+                                                </div>
+                                            </Table.Cell>
+                                        </Table.Row>
+                                    ))
+                                }
+                            </Table.Body>
+                        </Table>
+                    </div>
+                </Modal.Body>
+            </Modal>
+
+
             <div className={'mt-8'}>
                 <a className={'ml-20 hover:cursor-pointer '} style={{fontSize: "medium", color: 'blue'}} onClick={
                     () => {
@@ -130,8 +227,16 @@ const AssignmentDetails = () => {
                                             <Table.Cell style={{fontSize: 'medium'}}>
                                                 {
                                                     submission.sub_date ?
-                                                        <Button color={'green'} className={'font-medium border-2 shadow'}><b>Details</b></Button>
-                                                        : <Button color={'green'} disabled={true} className={'font-medium border-2 shadow'}><b>Details</b></Button>
+                                                        <Button color={'green'}
+                                                                className={'font-medium border-2 shadow'} onClick={
+                                                            () => {
+                                                                setSubmissionModal(true)
+                                                                setUrls(submission.urls)
+                                                                setFileNames(submission.file_names)
+                                                            }
+                                                        }><b>Details</b></Button>
+                                                        : <Button color={'green'} disabled={true}
+                                                                  className={'font-medium border-2 shadow'}><b>Details</b></Button>
                                                 }
                                             </Table.Cell>
                                         </Table.Row>
