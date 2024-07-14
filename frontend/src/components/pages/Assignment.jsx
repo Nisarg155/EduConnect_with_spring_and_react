@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {Accordion, Badge, Button, FileInput, Kbd, Label, Modal, Progress, Table} from "flowbite-react";
 import {HiCheck, HiPlus} from "react-icons/hi";
 import {useEffect, useState} from "react";
@@ -25,6 +25,7 @@ const Assignment = () => {
     const [progressbar, setProgressbar] = useState(0.0)
     const storage = getStorage();
     const [submissions, setSubmissions] = useState(new Map())
+    const navigation = useNavigate();
 
 
     useEffect(() => {
@@ -151,7 +152,7 @@ const Assignment = () => {
     return (
         <div>
             {
-                user.role === 'Student' ? <div className="flex flex-wrap gap-2 mt-6 justify-end">
+                user.role === 'Teacher' ? <div className="flex flex-wrap gap-2 mt-6 justify-end">
                     <Button gradientMonochrome="info" className={'lg:mr-40 mr-8 '} onClick={
                         () => {
                             setCreateModal(true)
@@ -354,7 +355,20 @@ const Assignment = () => {
                                         {
                                             user.role === 'Teacher' ?
                                                 <div className={'flex flex-wrap justify-end gap-2'}>
-                                                    <Button color={'info'}>
+                                                    <Button color={'info'}
+                                                            onClick={
+                                                                () => {
+                                                                    const data = {
+                                                                        code: class_id.code,
+                                                                        assignment_id:assignment.unique_code,
+                                                                        last_date:new Date(assignment.lastdate),
+                                                                    }
+                                                                    navigation(`/AssignmentDetails/`,{
+                                                                        state:data,
+                                                                    })
+                                                                }
+                                                            }
+                                                    >
                                                         <TbListDetails className={'mr-2 h-5 w-5'}/>
                                                         <b>
                                                             Details

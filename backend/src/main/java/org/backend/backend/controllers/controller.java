@@ -76,23 +76,13 @@ public class controller {
         }
         classes.setClass_id(code);
         class_repo.save(classes);
-
-
-        List<Classes> classesLis;
-        classesLis = class_repo.findClassesByTeacher_id(uid);
-        return ResponseEntity.ok(classesLis);
+        return ResponseEntity.ok(class_repo.findClassesByTeacher_id(uid));
     }
 
 
     @GetMapping("/classes/get_all/{uid}/{role}")
     public ResponseEntity<List<Classes>> get_all_classes(@PathVariable String uid, @PathVariable String role) {
-        List<Classes> classesList;
-        if (role.equals("Teacher")) {
-            classesList = class_repo.findClassesByTeacher_id(uid);
-            return ResponseEntity.ok(classesList);
-        }
-        classesList = class_repo.findAll();
-        return ResponseEntity.ok(classesList);
+            return ResponseEntity.ok( class_repo.findClassesByTeacher_id(uid));
     }
 
     @PutMapping("/classes/edit")
@@ -117,22 +107,19 @@ public class controller {
         List<String> file_names = (List<String>) data.get("file_names");
         Materials materials = new Materials(title, description, urls, file_names, class_code, code);
         materials_repo.save(materials);
-        List<Materials> materialsList = materials_repo.findByClass_id(class_code);
-        return ResponseEntity.ok(materialsList);
+        return ResponseEntity.ok(materials_repo.findByClass_id(class_code));
     }
 
     @GetMapping("materials/{code}")
     public ResponseEntity<List<Materials>> get_materials(@PathVariable String code) {
-        List<Materials> list = materials_repo.findByClass_id(code);
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(materials_repo.findByClass_id(code));
     }
 
     @DeleteMapping("materials/{class_code}/{material_code}")
     public ResponseEntity<List<Materials>> delete_material(@PathVariable String class_code, @PathVariable String material_code) {
         Materials material = materials_repo.findByCode(material_code);
         materials_repo.delete(material);
-        List<Materials> materialsList = materials_repo.findByClass_id(class_code);
-        return ResponseEntity.ok(materialsList);
+        return ResponseEntity.ok(materials_repo.findByClass_id(class_code));
     }
 
     @PostMapping("Assignment/{class__code}")
@@ -167,19 +154,24 @@ public class controller {
         return ResponseEntity.ok(class_repo.findById(code).isPresent());
     }
 
-    @PostMapping("JoinClass/{uid}/{code}")
-    ResponseEntity<List<Classes>> join_class(@PathVariable String uid, @PathVariable String code) {
+    @PostMapping("JoinClass/{uid}/{code}/{name}")
+    ResponseEntity<List<Classes>> join_class(@PathVariable String uid, @PathVariable String code, @PathVariable String name) {
+        System.out.println(name);
 
         Optional<org.backend.backend.model.Student_Class> student_class = studentClass.findById(uid);
+        Optional<Classes> classesOptional = class_repo.findById(code);
+        if(classesOptional.isPresent()) {
+            classesOptional.get().addStudent_id(uid);
+            classesOptional.get().addStudent_name(name);
+            class_repo.save(classesOptional.get());
+        }
         if (student_class.isPresent()) {
-            List<String> codes = student_class.get().getCodes();
-            codes.add(code);
-            student_class.get().setCodes(codes);
+           student_class.get().addCode(code);
             studentClass.save(student_class.get());
 
             List<Classes> classesList = new ArrayList<>();
             Optional<Classes> optionalClasses1;
-            for (String code1 : codes) {
+            for (String code1 : student_class.get().getCodes()) {
                 optionalClasses1 = class_repo.findById(code1);
                 optionalClasses1.ifPresent(classesList::add);
             }
@@ -214,17 +206,19 @@ public class controller {
     @DeleteMapping("/RemoveClass/{uid}/{code}")
     ResponseEntity<List<Classes>> class_remove(@PathVariable String uid, @PathVariable String code) {
         Optional<Student_Class> student_class = studentClass.findById(uid);
-        if (student_class.isPresent()) {
-            List<String> codes = student_class.get().getCodes();
-            codes.remove(code);
-            student_class.get().setCodes(codes);
-            studentClass.save(student_class.get());
+        Optional<Classes> classesOptional = class_repo.findById(code);
+        if (student_class.isPresent() && classesOptional.isPresent()) {
+            int index = classesOptional.get().getStudent_ids().indexOf(uid);
+           classesOptional.get().removeStudent_id_and_Student_name(uid);
+            student_class.get().removeCode(code);
             List<Classes> classesList = new ArrayList<>();
             Optional<Classes> optionalClasses1;
-            for (String code1 : codes) {
+            for (String code1 : student_class.get().getCodes()) {
                 optionalClasses1 = class_repo.findById(code1);
                 optionalClasses1.ifPresent(classesList::add);
             }
+            studentClass.save(student_class.get());
+            class_repo.save(classesOptional.get());
             return ResponseEntity.ok(classesList);
         } else {
             return ResponseEntity.ok(null);
@@ -243,6 +237,26 @@ public class controller {
     {
         return ResponseEntity.ok(submissions_repo.findByClassCode(classId,uid));
     }
+
+    @GetMapping("submissions_by_assignment/{assignment_id}")
+    ResponseEntity<List<submissions>> get_submission_by_assignment_id(@PathVariable String assignment_id )
+    {
+        List<submissions> submissionsList = submissions_repo.findByAssignmentId(assignment_id);
+        return ResponseEntity.ok(submissionsList);
+    }
+
+    @GetMapping("get_students/{code}")
+    ResponseEntity<Map<String,Object>> get_students(@PathVariable String code)
+    {
+        Map<String,Object> stringObjectMap = new HashMap<>();
+        Optional<Classes> optionalClasses = class_repo.findById(code);
+        if(optionalClasses.isPresent()) {
+            stringObjectMap.put("student_id",optionalClasses.get().getStudent_ids());
+            stringObjectMap.put("student_name",optionalClasses.get().getStudent_names());
+        }
+        return ResponseEntity.ok(stringObjectMap);
+    }
+
 //    @PostMapping("/submission")
 //    ResponseEntity<List<submissions>> submissions(@RequestBody Map<String, Object> data) {
 //        List<String> codes = (List<String>) data.get("codes");

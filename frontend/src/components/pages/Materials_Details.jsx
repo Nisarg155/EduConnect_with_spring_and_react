@@ -1,6 +1,7 @@
 import {Button, Table} from "flowbite-react";
 import {useLocation, useNavigate} from "react-router-dom";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import {saveAs} from 'file-saver'
 
 
 const Materials_Details = () => {
@@ -29,7 +30,7 @@ const Materials_Details = () => {
 
             })
             .catch((error) => {
-                // Handle any errors
+
             });
     }
     return (
@@ -75,7 +76,7 @@ const Materials_Details = () => {
                                         {/*</a>*/}
 
                                         <div className={'flex flex-wrap  justify-center'}>
-                                            <Button color={'success'} className={'mr-4'}
+                                            <Button color={'green'} className={'mr-4 border-2 shadow'}
                                                     onClick={
                                                         (event) => {
                                                             event.preventDefault();
@@ -90,7 +91,7 @@ const Materials_Details = () => {
 
                                             {
                                                 regex.test(file_names[i]) ?
-                                                    <Button className={'ml-4'} color={'info'} href={url.toString()} target={'_blank'}>
+                                                    <Button className={'ml-4 border-2 shadow'} color={'cyan'} href={url.toString()} target={'_blank'}>
                                                         <b>
                                                             View
                                                         </b>

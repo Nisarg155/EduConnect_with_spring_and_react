@@ -4,12 +4,12 @@ import {useSelector} from "react-redux";
 import {Button, Card, Modal} from "flowbite-react";
 import {HiPlus} from 'react-icons/hi'
 import {MdModeEdit} from "react-icons/md";
-import { Hourglass} from "react-loader-spinner";
+import {Hourglass} from "react-loader-spinner";
 import {CreateClassFetch, DeleteClass} from "../../../fetch_components/fetchComponents.jsx";
 import CreateClass from "../../forms/createClass.jsx";
 import {FaInfoCircle, FaTrash} from "react-icons/fa";
 import EditClass from "../../forms/EditClass.jsx";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 
 const Teacher_Home = () => {
@@ -21,6 +21,7 @@ const Teacher_Home = () => {
     const [createclassmodal, setCreateclassmodal] = useState(false)
     const [editclassmodal, setEditclassmodal] = useState(false)
     const [editclassdata, setEditclassdata] = useState({})
+    const navigate = useNavigate()
 
 
     useEffect(() => {
@@ -170,7 +171,17 @@ const Teacher_Home = () => {
 
                                                 <Card className="max-w-sm mr-8 ml-8 mb-8 mt-8 "
                                                       style={{width: "25rem", height: "15rem"}} key={card.class_id}>
-                                                    <Link to={`/ClassDetails/${card.class_id}`} key={card.class_id}>
+                                                    <div onClick={
+                                                        () => {
+                                                            navigate(`/ClassDetails/${card.class_id}`)
+                                                        }
+                                                    }>
+
+                                                        {/*<Link to={{ pathname:`/ClassDetails/${card.class_id}`,*/}
+                                                        {/*            state:{*/}
+                                                        {/*    student_ids:card.student_ids,*/}
+                                                        {/*    student_name: card.student_names,*/}
+                                                        {/*            }  }}  key={card.class_id}>*/}
                                                         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white "
                                                             style={{marginTop: "-100px"}}>
                                                             {card.name}
@@ -188,7 +199,9 @@ const Teacher_Home = () => {
                                                                 {card.description}
                                                             </p>
                                                         </div>
-                                                    </Link>
+                                                    </div>
+
+                                                    {/*</Link>*/}
                                                     <span className={'font-medium'}>
                                                         <b>
                                                         Code :- {card.class_id}

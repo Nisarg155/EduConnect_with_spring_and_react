@@ -7,6 +7,7 @@ import {Home} from "./components/pages/Home.jsx";
 import {ClassDetails} from "./components/pages/ClassDetails.jsx";
 import Student_home from "./components/pages/Student/Student_home.jsx";
 import Materials_Details from "./components/pages/Materials_Details.jsx";
+import AssignmentDetails from "./components/pages/Teacher/AssignmentDetails.jsx";
 
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -35,6 +36,7 @@ function App() {
                             <Route index path={'/'} element={<Teacher_Home/>}/>
                             <Route path={'/ClassDetails/:code'} element={<ClassDetails/>}/>
                             <Route path={'/MaterialsDetails'} element={ <Materials_Details/> }/>
+                            <Route path={'/AssignmentDetails'} element={ <AssignmentDetails/> }/>
                         </Routes>
                     )
                 }

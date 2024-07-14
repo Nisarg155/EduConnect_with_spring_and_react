@@ -3,6 +3,7 @@ package org.backend.backend.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Document
@@ -35,6 +36,19 @@ public class Student_Class {
 
     public void setCodes(List<String> codes) {
         this.codes = codes;
+    }
+
+    public void addCode(String code) {
+        if(this.codes == null) {
+            this.codes = new ArrayList<>();
+        }
+        this.codes.add(code);
+    }
+
+    public void removeCode(String code) {
+        if(this.codes != null) {
+            this.codes.remove(code);
+        }
     }
 
     @Override

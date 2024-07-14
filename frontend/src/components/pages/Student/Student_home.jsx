@@ -4,7 +4,6 @@ import JoinClass from "../../forms/JoinClass.jsx";
 import {useEffect, useState} from "react";
 import {Grid, Hourglass} from "react-loader-spinner";
 import {Link} from "react-router-dom";
-import {FaTrash} from "react-icons/fa";
 import {useSelector} from "react-redux";
 import {toast, ToastContainer} from "react-toastify";
 
@@ -16,6 +15,7 @@ const StudentHome = () => {
     const [isclassempty, setIsclasspresent] = useState(false)
     const [isloading, setIsloading] = useState(true)
     const [codes, setCodes] = useState(new Set())
+
     const toggleModal = () => {
         setJoinmodal(!joinmodal);
     }
@@ -39,7 +39,7 @@ const StudentHome = () => {
 
     const join_class = async (code) => {
 
-        const res = await fetch(`http://localhost:8080/api/JoinClass/${user.uid}/${code}`, {
+        const res = await fetch(`http://localhost:8080/api/JoinClass/${user.uid}/${code}/${user.username}`, {
             method: 'POST',
         });
 
@@ -53,10 +53,6 @@ const StudentHome = () => {
             }
         )
     }
-
-    useEffect(() => {
-        console.log(codes)
-    }, [codes]);
     useEffect(() => {
         const response = fetch(`http://localhost:8080/api/get_classes_student/${user.uid}`)
         response.then(
