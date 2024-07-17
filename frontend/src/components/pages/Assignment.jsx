@@ -307,7 +307,7 @@ const Assignment = () => {
                 {
                     (
                         assignments.map((assignment) => (
-                            <Accordion key={assignment.unique_code} className={'shadow mb-4'}>
+                            <Accordion collapseAll={true} key={assignment.unique_code} className={'shadow mb-4'}>
                                 <Accordion.Panel>
                                     <Accordion.Title className={'font-medium'}>
                                         <div className={'flex flex-wrap gap-4'}>

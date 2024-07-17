@@ -204,7 +204,7 @@ const StudentHome = () => {
                                                               by :- {card.teacher_name}
                                                             </b>
                                                         </span>
-                                                            <Button color="failure"
+                                                            <Button className={'shadow'} color="failure"
                                                                     onClick={(event) => {
                                                                         event.preventDefault();
                                                                         removeClass(card.class_id);

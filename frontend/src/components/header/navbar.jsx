@@ -1,16 +1,22 @@
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {Button, Label, Modal, TextInput} from "flowbite-react";
 import {useDispatch, useSelector} from "react-redux";
-import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword,  signOut,  updateProfile} from 'firebase/auth';
+import {
+    createUserWithEmailAndPassword,
+    getAuth,
+    signInWithEmailAndPassword,
+    signOut,
+    updateProfile
+} from 'firebase/auth';
 import {doc, getDoc, getFirestore, setDoc} from 'firebase/firestore'
 import app from "../../firebase/config.jsx";
-import {AddUser , DeleteUser} from "../../redux/reducer/loginslice.jsx";
+import {AddUser, DeleteUser} from "../../redux/reducer/loginslice.jsx";
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {FetchComponents} from "../../fetch_components/fetchComponents.jsx";
 import {HiMail} from "react-icons/hi";
-import {useNavigate} from "react-router-dom";
-import { browserSessionPersistence , setPersistence } from 'firebase/auth';
+import {Link, useNavigate} from "react-router-dom";
+import {browserSessionPersistence, setPersistence} from 'firebase/auth';
 
 const auth = getAuth(app);
 await setPersistence(auth, browserSessionPersistence);
@@ -138,6 +144,7 @@ const Navbar = () => {
         }
     }
 
+
     return (
         // eslint-disable-next-line react/jsx-no-comment-textnodes
         <div>
@@ -211,17 +218,6 @@ const Navbar = () => {
                                 <TextInput id="password" type="password" name={'password'} required/>
                             </div>
                             <div className="flex justify-between">
-
-                                {
-                                    signupModal ?
-                                        null
-                                        :
-                                        <a href="#"
-                                           className="text-sm text-cyan-700 hover:underline dark:text-cyan-500">
-                                            Lost Password?
-                                        </a>
-                                }
-
                             </div>
                             <div className="flex justify-between">
 
@@ -286,25 +282,31 @@ const Navbar = () => {
                 <div className="container px-5 py-4 mx-auto">
                     <div className="lg:flex lg:items-center lg:justify-between">
                         <div className="flex items-center justify-between">
-                            <a href="#">
-                                <img className="w-auto h-6 sm:h-7" src="https://merakiui.com/images/full-logo.svg"
-                                     alt=""/>
-                            </a>
-                            <div className="flex lg:hidden">
-                                <button onClick={toggleMenu} type="button"
-                                        className="text-gray-100 hover:text-gray-200 focus:outline-none"
-                                        aria-label="toggle menu">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none"
-                                         viewBox="1 0 24 24" stroke="currentColor" strokeWidth="2">
-                                        {isOpen ? (
-                                            <path strokeLinecap="round" strokeLinejoin="round"
-                                                  d="M6 18L18 6M6 6l12 12"/>
-                                        ) : (
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 8h16M4 16h16"/>
-                                        )}
-                                    </svg>
-                                </button>
-                            </div>
+                            <Link to={'/'} className={'no-underline text-white'}>
+                                <b className={'font-medium'}>
+                                    EduConnect
+                                </b>
+                            </Link>
+                            {
+                                user ?
+                                    <div className="flex lg:hidden">
+                                        <button onClick={toggleMenu} type="button"
+                                                className="text-gray-100 hover:text-gray-200 focus:outline-none"
+                                                aria-label="toggle menu">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none"
+                                                 viewBox="1 0 24 24" stroke="currentColor" strokeWidth="2">
+                                                {isOpen ? (
+                                                    <path strokeLinecap="round" strokeLinejoin="round"
+                                                          d="M6 18L18 6M6 6l12 12"/>
+                                                ) : (
+                                                    <path strokeLinecap="round" strokeLinejoin="round"
+                                                          d="M4 8h16M4 16h16"/>
+                                                )}
+                                            </svg>
+                                        </button>
+                                    </div> : null
+                            }
+
                         </div>
 
 
@@ -327,23 +329,10 @@ const Navbar = () => {
                                                 }
                                             }
                                                className="px-3 py-2 mx-3 mt-2 text-gray-100 hover:bg-gray-600 hover:cursor-pointer rounded-md lg:mt-0">Sign-out</a>
-                                            <a href="#"
-                                               className="px-3 py-2 mx-3 mt-2 text-gray-100 hover:bg-gray-600 hover:cursor-pointer rounded-md lg:mt-0">Materials</a>
-                                            <a href="#"
-                                               className="px-3 py-2 mx-3 mt-2 text-gray-100 hover:bg-gray-600 hover:cursor-pointer rounded-md lg:mt-0">About</a>
+
                                         </div>
                                         <div className="flex items-center mt-4 lg:mt-0">
-                                            <button
-                                                className="hidden mx-4 text-gray-100 hover:text-gray-200 focus:text-gray-200 focus:outline-none lg:block"
-                                                aria-label="show notifications">
-                                                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none"
-                                                     xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M15 17H20L18.5951 15.5951C18.2141 15.2141 18 14.6973 18 14.1585V11C18 8.38757 16.3304 6.16509 14 5.34142V5C14 3.89543 13.1046 3 12 3C10.8954 3 10 3.89543 10 5V5.34142C7.66962 6.16509 6 8.38757 6 11V14.1585C6 14.6973 5.78595 15.2141 5.40493 15.5951L4 17H9M15 17V18C15 19.6569 13.6569 21 12 21C10.3431 21 9 19.6569 9 18V17M15 17H9"
-                                                        stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                                                        strokeLinejoin="round"/>
-                                                </svg>
-                                            </button>
+
                                             <button type="button" className="flex items-center focus:outline-none"
                                                     aria-label="toggle profile dropdown">
                                                 <div
@@ -358,8 +347,6 @@ const Navbar = () => {
                                     </div>
                                 ) :
                                 <Button onClick={() => setOpenModal(true)} color="blue"> <b>Sign In</b> </Button>
-
-
                         }
 
 
