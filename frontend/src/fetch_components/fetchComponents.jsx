@@ -2,7 +2,7 @@ export function FetchComponents(user)
 {
 
     if(user.role === 'Teacher') {
-        fetch('http://localhost:8080/api/teacher/create', {
+        fetch('https://educonnectwithspringandreact-production.up.railway.app/api/teacher/create', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -16,7 +16,7 @@ export function FetchComponents(user)
     }
     else if(user.role === 'Student')
     {
-        fetch('http://localhost:8080/api/student/create', {
+        fetch('https://educonnectwithspringandreact-production.up.railway.app/api/student/create', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -32,7 +32,7 @@ export function FetchComponents(user)
 }
 
 export const CreateClassFetch = (data) => {
-    return fetch(`http://localhost:8080/api/classes/create/${data.uid}/${data.teacher_name}`
+    return fetch(`https://educonnectwithspringandreact-production.up.railway.app/api/classes/create/${data.uid}/${data.teacher_name}`
         ,
         {
             method: 'POST',
@@ -55,14 +55,14 @@ export const CreateClassFetch = (data) => {
 
 export const DeleteClass = (data) => {
 
-    return fetch(`http://localhost:8080/api/classes/delete/${data.code}/${data.uid}` , {
+    return fetch(`https://educonnectwithspringandreact-production.up.railway.app/api/classes/delete/${data.code}/${data.uid}` , {
         method:'DELETE'
     })
 }
 
 export const UpdateClass = (data) => {
 
-    return fetch('http://localhost:8080/api/classes/edit' , {
+    return fetch('https://educonnectwithspringandreact-production.up.railway.app/api/classes/edit' , {
         method:'PUT',
         headers: {
             'Accept': 'application/json',
@@ -86,7 +86,7 @@ export const UploadMaterialFetch  = async (data) =>
 {
 
 
-    return fetch('http://localhost:8080/api/material/upload' ,{
+    return fetch('https://educonnectwithspringandreact-production.up.railway.app/api/material/upload' ,{
         method:'POST',
         headers: {
             'Accept': 'application/json',
@@ -97,7 +97,7 @@ export const UploadMaterialFetch  = async (data) =>
 }
 
 export const CreateAssignmentFetch  = async (data,code) => {
-    return  fetch(`http://localhost:8080/api/Assignment/${code}`,{
+    return  fetch(`https://educonnectwithspringandreact-production.up.railway.app/api/Assignment/${code}`,{
         method:'POST',
         headers:{
             'Accept': 'application/json',

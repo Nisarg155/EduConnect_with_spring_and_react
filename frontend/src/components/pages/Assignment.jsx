@@ -32,7 +32,7 @@ const Assignment = () => {
 
         if (user.role === 'Student') {
 
-            const res = fetch(`http://localhost:8080/api/submissions/${user.uid}/${class_id.code}`, {
+            const res = fetch(`https://educonnectwithspringandreact-production.up.railway.app/api/submissions/${user.uid}/${class_id.code}`, {
                 method: 'GET'
             })
             res.then(
@@ -50,7 +50,7 @@ const Assignment = () => {
 
         }
 
-        let res = fetch(`http://localhost:8080/api/get_assignments/${class_id.code}`, {
+        let res = fetch(`https://educonnectwithspringandreact-production.up.railway.app/api/get_assignments/${class_id.code}`, {
             method: 'GET',
         })
 
@@ -73,7 +73,7 @@ const Assignment = () => {
         setCurrent_assignment(null)
     }
     const get_submissions = (data) => {
-        return fetch(`http://localhost:8080/api/submission/${user.uid}/${class_id.code}`, {
+        return fetch(`https://educonnectwithspringandreact-production.up.railway.app/api/submission/${user.uid}/${class_id.code}`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

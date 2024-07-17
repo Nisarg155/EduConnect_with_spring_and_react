@@ -41,7 +41,7 @@ export function Materials() {
                 }
             )
         })
-        const responses = fetch(`http://localhost:8080/api/materials/${class_id.code}/${id}`, {
+        const responses = fetch(`https://educonnectwithspringandreact-production.up.railway.app/api/materials/${class_id.code}/${id}`, {
             method: 'DELETE'
         })
         responses.then(
@@ -55,7 +55,7 @@ export function Materials() {
         )
     }
     useEffect(() => {
-        const response = fetch(`http://localhost:8080/api/materials/${class_id.code}`, {})
+        const response = fetch(`https://educonnectwithspringandreact-production.up.railway.app/api/materials/${class_id.code}`, {})
         response.then(
             response => {
                 response.json().then(

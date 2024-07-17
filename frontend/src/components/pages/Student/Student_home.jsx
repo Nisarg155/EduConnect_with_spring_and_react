@@ -20,7 +20,7 @@ const StudentHome = () => {
         setJoinmodal(!joinmodal);
     }
     const removeClass = async (code) => {
-        const res = await fetch(`http://localhost:8080/api/RemoveClass/${user.uid}/${code}`,{
+        const res = await fetch(`https://educonnectwithspringandreact-production.up.railway.app/api/RemoveClass/${user.uid}/${code}`,{
             method:'DELETE'
         })
         res.json().then(
@@ -39,7 +39,7 @@ const StudentHome = () => {
 
     const join_class = async (code) => {
 
-        const res = await fetch(`http://localhost:8080/api/JoinClass/${user.uid}/${code}/${user.username}`, {
+        const res = await fetch(`https://educonnectwithspringandreact-production.up.railway.app/api/JoinClass/${user.uid}/${code}/${user.username}`, {
             method: 'POST',
         });
 
@@ -54,7 +54,7 @@ const StudentHome = () => {
         )
     }
     useEffect(() => {
-        const response = fetch(`http://localhost:8080/api/get_classes_student/${user.uid}`)
+        const response = fetch(`https://educonnectwithspringandreact-production.up.railway.app/api/get_classes_student/${user.uid}`)
         response.then(
             (response) => {
                 response.json().then(
@@ -97,7 +97,7 @@ const StudentHome = () => {
                                 setJoinmodal(false)
                                 return
                             }
-                            let response = await fetch(`http://localhost:8080/api/verify_code/${code}`);
+                            let response = await fetch(`https://educonnectwithspringandreact-production.up.railway.app/api/verify_code/${code}`);
                             response.json().then(
                                 (value) => {
                                     if (value) {

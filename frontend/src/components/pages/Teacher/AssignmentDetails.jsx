@@ -47,10 +47,10 @@ const AssignmentDetails = () => {
     }
 
     useEffect(() => {
-        const res2 = fetch(`http://localhost:8080/api/get_students/${state.code}`, {
+        const res2 = fetch(`https://educonnectwithspringandreact-production.up.railway.app/api/get_students/${state.code}`, {
             method: 'GET'
         })
-        const res = fetch(`http://localhost:8080/api/submissions_by_assignment/${state.assignment_id}`, {
+        const res = fetch(`https://educonnectwithspringandreact-production.up.railway.app/api/submissions_by_assignment/${state.assignment_id}`, {
             method: 'GET',
         })
 
