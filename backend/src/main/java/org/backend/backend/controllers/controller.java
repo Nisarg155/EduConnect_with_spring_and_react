@@ -47,6 +47,11 @@ public class controller {
         return saltStr;
     }
 
+    @GetMapping("/")
+    public  String initial_url()
+    {
+        return "Hello World";
+    }
 
     @PostMapping("/student/create")
     public String create_new_student(@RequestBody Student student) {
