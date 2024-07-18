@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
-@CrossOrigin(origins = {"https://edu-connect-with-spring-and-react.vercel.app/"})
+@CrossOrigin(origins = {"*"})
 @RequestMapping("/api")
 public class controller {
 
@@ -50,6 +50,7 @@ public class controller {
     @GetMapping("/")
     public  String initial_url()
     {
+        System.out.println("hello");
         return "Hello World";
     }
 
