@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
-@CrossOrigin(origins = {"https://edu-connect-with-spring-and-react.vercel.app/","https://vercel.com/nisarg155s-projects/edu-connect-with-spring-and-react/C1NyvrTq1TJMyLYhHS49nyCfqumD/"})
+@CrossOrigin(origins = {"https://edu-connect-with-spring-and-react.vercel.app/","https://vercel.com/nisarg155s-projects/edu-connect-with-spring-and-react/C1NyvrTq1TJMyLYhHS49nyCfqumD/" , "https://edu-connect-with-spring-and-react-fne2qdqxg-nisarg155s-projects.vercel.app/"})
 @RequestMapping("/api")
 public class controller {
 
