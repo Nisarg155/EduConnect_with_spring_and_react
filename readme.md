@@ -31,7 +31,7 @@ EduConnect is a modern classroom management system that bridges the gap between 
 
 
 
-![ER Diagram](./assets/er-diagram.png)
+![ER Diagram](./assets/er.png)
 
 ---
 
@@ -113,13 +113,16 @@ spring.data.mongodb.uri="mongodb+srv://<username>:<password>@<cluster>.mongodb.n
 
 ## 🧰 Tech Stack
 
-| Layer        | Tech                     |
-| ------------ | ------------------------ |
-| Frontend     | React / Next.js          |
-| Backend      | Spring Boot (Java)       |
-| Database     | MongoDB                  |
-| Auth         | Firebase Authentication  |
-| File Storage | Firebase Storage / Local |
-| Styling      | Tailwind CSS / Flowbite  |
+
+### 🧱 **Tech Stack Overview**
+
+| Layer        | Technology                                                                                                                                                                                                                                         |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Frontend** | ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge\&logo=react\&logoColor=61DAFB) ![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge\&logo=next.js\&logoColor=white)                                   |
+| **Backend**  | ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge\&logo=spring-boot\&logoColor=white)                                                                                                                             |
+| **Database** | ![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge\&logo=mongodb\&logoColor=white)                                                                                                                                         |
+| **Auth**     | ![Firebase](https://img.shields.io/badge/Firebase_Auth-FFCA28?style=for-the-badge\&logo=firebase\&logoColor=black)                                                                                                                                 |
+| **Storage**  | ![Firebase Storage](https://img.shields.io/badge/Firebase_Storage-FFA000?style=for-the-badge\&logo=firebase\&logoColor=black) ![Local Storage](https://img.shields.io/badge/Local_Storage-444444?style=for-the-badge\&logo=files\&logoColor=white) |
+| **Styling**  | ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge\&logo=tailwind-css\&logoColor=white) ![Flowbite](https://img.shields.io/badge/Flowbite-0F172A?style=for-the-badge\&logo=flowbite\&logoColor=00BFFF)           |
 
 ---
