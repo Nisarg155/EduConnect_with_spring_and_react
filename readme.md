@@ -27,13 +27,6 @@ EduConnect is a modern classroom management system that bridges the gap between 
 
 ---
 
-## 🗂️ ER Diagram
-
-
-
-![ER Diagram](./assets/er.png)
-
----
 
 
 ### 📁 `.env` Configuration
